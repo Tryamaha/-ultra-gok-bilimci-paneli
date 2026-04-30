@@ -279,5 +279,58 @@ startCamera();
    📸 3sn CCD Pozlama
   </button>
 </div>
+  <div id="astroFinder" style="
+position:absolute;top:115px;left:10px;right:10px;z-index:120;
+background:rgba(0,0,0,.55);border:1px solid rgba(120,220,255,.35);
+border-radius:18px;padding:10px;backdrop-filter:blur(16px);color:white;
+font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;">
+
+  <div style="font-weight:800;font-size:15px;margin-bottom:8px;color:#7df3ff;">
+    🌌 Astro Target Finder V2
+  </div>
+
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;">
+    <button onclick="astroTarget('Ay')" class="astroBtn">🌙 Ay</button>
+    <button onclick="astroTarget('Jüpiter')" class="astroBtn">🪐 Jüpiter</button>
+    <button onclick="astroTarget('Satürn')" class="astroBtn">🪐 Satürn</button>
+    <button onclick="astroTarget('Sirius')" class="astroBtn">⭐ Sirius</button>
+    <button onclick="astroTarget('Samanyolu')" class="astroBtn">🌌 Samanyolu</button>
+    <button onclick="astroTarget('ISS')" class="astroBtn">🛰️ ISS</button>
+  </div>
+
+  <div style="margin-top:10px;font-size:13px;line-height:1.55;">
+    <div>Hedef: <b id="targetName">Seçilmedi</b></div>
+    <div>Yön: <b id="targetDir">--</b></div>
+    <div>Yükselim: <b id="targetAlt">--°</b></div>
+    <div>Gözlem Skoru: <b id="targetScore">--</b></div>
+  </div>
+</div>
+
+<style>
+.astroBtn{
+  border:0;border-radius:12px;padding:9px 4px;
+  background:#08223f;color:white;font-weight:700;font-size:12px;
+}
+.astroBtn:active{background:#0aa3ff;}
+</style>
+
+<script>
+function astroTarget(name){
+  const data = {
+    "Ay": ["Güneydoğu", 42, "Çok iyi"],
+    "Jüpiter": ["Doğu", 35, "İyi"],
+    "Satürn": ["Güney", 28, "Orta"],
+    "Sirius": ["Güneybatı", 51, "Çok iyi"],
+    "Samanyolu": ["Güney", 24, "Karanlık ortam gerekli"],
+    "ISS": ["Değişken", 65, "Canlı veri gerekir"]
+  };
+
+  const t = data[name];
+  document.getElementById("targetName").textContent = name;
+  document.getElementById("targetDir").textContent = t[0];
+  document.getElementById("targetAlt").textContent = t[1] + "°";
+  document.getElementById("targetScore").textContent = t[2];
+}
+</script>
 </body>
 </html>
