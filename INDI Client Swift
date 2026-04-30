@@ -1,0 +1,31 @@
+window.INDIBridge = {
+    connectServer(ip){
+        if(window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.indi){
+            window.webkit.messageHandlers.indi.postMessage({
+                action:"connect",
+                host:ip
+            });
+        } else {
+            alert("INDI Native Bridge bulunamadı");
+        }
+    },
+
+    gotoTarget(ra,dec){
+        if(window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.indi){
+            window.webkit.messageHandlers.indi.postMessage({
+                action:"goto",
+                ra:ra,
+                dec:dec
+            });
+        }
+    },
+
+    captureExposure(sec){
+        if(window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.indi){
+            window.webkit.messageHandlers.indi.postMessage({
+                action:"capture",
+                seconds:sec
+            });
+        }
+    }
+};
