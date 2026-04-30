@@ -83,6 +83,7 @@ input[type=range]{width:100%}
     <div class="card">
       Zoom<br><span id="zoomText" class="big">1.0x</span>
     </div>
+    
     <div class="card">
       Pusula<br><span id="compass" class="big">--°</span>
     </div>
@@ -261,5 +262,22 @@ function handleOrientation(e){
 
 startCamera();
 </script>
+  <script src="indi-bridge.js"></script>
+<div style="position:absolute;bottom:170px;left:10px;right:10px;z-index:99;">
+  <button onclick="INDIBridge.connectServer(prompt('INDI Server IP'))"
+   style="width:100%;padding:14px;border:none;border-radius:15px;background:#071f44;color:white;font-weight:700;">
+   🔭 INDI Server Bağlan
+  </button>
+
+  <button onclick="INDIBridge.gotoTarget(5.23,-8.20)"
+   style="width:100%;padding:14px;border:none;border-radius:15px;background:#0b355f;color:white;font-weight:700;margin-top:8px;">
+   🌙 Ay Koordinatına Git
+  </button>
+
+  <button onclick="INDIBridge.captureExposure(3)"
+   style="width:100%;padding:14px;border:none;border-radius:15px;background:#12486f;color:white;font-weight:700;margin-top:8px;">
+   📸 3sn CCD Pozlama
+  </button>
+</div>
 </body>
 </html>
