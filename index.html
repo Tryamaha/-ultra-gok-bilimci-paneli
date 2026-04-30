@@ -2,74 +2,182 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Ultra Gök Bilimci Paneli</title>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
+<title>UltraTelescope AI PRO V4</title>
+
+<script src="https://cdn.jsdelivr.net/npm/astronomy-engine@2.1.19/astronomy.browser.min.js"></script>
+
 <style>
 *{box-sizing:border-box}
-body{
-  margin:0;background:#02040a;color:white;
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+html,body{
+  margin:0;
+  padding:0;
+  width:100%;
+  height:100%;
   overflow:hidden;
+  background:#02050d;
+  color:white;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
 }
 #app{
-  height:100vh;display:flex;flex-direction:column;
-  background:radial-gradient(circle at top,#102040,#02040a 65%);
+  height:100vh;
+  display:flex;
+  flex-direction:column;
+  background:radial-gradient(circle at top,#102b5f,#02050d 66%);
 }
 header{
-  padding:14px;text-align:center;
-  background:rgba(0,0,0,.55);backdrop-filter:blur(18px);
-  border-bottom:1px solid rgba(255,255,255,.12);
+  padding:10px;
+  text-align:center;
+  background:rgba(0,0,0,.78);
+  backdrop-filter:blur(18px);
+  border-bottom:1px solid rgba(120,220,255,.28);
+  z-index:40;
 }
-header h1{font-size:18px;margin:0}
-header p{font-size:12px;margin:4px 0 0;color:#9bdcff}
-
+h1{
+  font-size:18px;
+  margin:0;
+  color:#dffaff;
+}
+header p{
+  font-size:11px;
+  margin:3px 0 0;
+  color:#7fe7ff;
+}
 #viewer{
-  position:relative;flex:1;overflow:hidden;background:#000;
+  position:relative;
+  flex:1;
+  background:#000;
+  overflow:hidden;
 }
 video,canvas{
-  position:absolute;inset:0;width:100%;height:100%;
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
   object-fit:cover;
 }
 #hud{
-  position:absolute;top:12px;left:12px;right:12px;
-  display:grid;grid-template-columns:1fr 1fr;
-  gap:8px;z-index:5;
+  position:absolute;
+  top:10px;
+  left:10px;
+  right:10px;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:7px;
+  z-index:10;
 }
 .card{
-  background:rgba(0,0,0,.45);
-  border:1px solid rgba(255,255,255,.15);
-  border-radius:14px;padding:10px;
+  background:rgba(0,0,0,.56);
+  border:1px solid rgba(120,220,255,.30);
+  border-radius:15px;
+  padding:8px;
+  font-size:11px;
   backdrop-filter:blur(14px);
+}
+.big{
+  font-size:17px;
+  font-weight:900;
+  color:#69f3ff;
+}
+#targetPanel{
+  position:absolute;
+  left:10px;
+  right:10px;
+  bottom:260px;
+  z-index:20;
+  background:rgba(0,0,0,.70);
+  border:1px solid rgba(120,220,255,.38);
+  border-radius:20px;
+  padding:10px;
+  backdrop-filter:blur(18px);
+}
+#grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:6px;
+  margin-top:8px;
+}
+button{
+  border:0;
+  border-radius:13px;
+  padding:9px 5px;
+  background:#08233f;
+  color:white;
+  font-weight:800;
   font-size:12px;
 }
-.big{font-size:18px;font-weight:700;color:#75f5ff}
-
-#controls{
-  background:rgba(0,0,0,.72);
+button.active{
+  background:#0aa3ff;
+}
+button:active{
+  transform:scale(.98);
+}
+#result{
+  margin-top:9px;
+  background:rgba(255,255,255,.065);
+  border-radius:14px;
+  padding:9px;
+  font-size:12px;
+  line-height:1.55;
+}
+#aiPanel{
+  position:absolute;
+  left:10px;
+  right:10px;
+  bottom:118px;
+  z-index:25;
+  background:rgba(0,0,0,.74);
+  border:1px solid rgba(86,234,255,.48);
+  border-radius:20px;
   padding:10px;
-  border-top:1px solid rgba(255,255,255,.14);
+  backdrop-filter:blur(18px);
+}
+#aiResult{
+  margin-top:8px;
+  background:rgba(255,255,255,.07);
+  border-radius:14px;
+  padding:9px;
+  font-size:12px;
+  line-height:1.45;
+  max-height:105px;
+  overflow:auto;
+}
+#controls{
+  background:rgba(0,0,0,.86);
+  padding:8px;
+  border-top:1px solid rgba(120,220,255,.25);
+  z-index:50;
   backdrop-filter:blur(20px);
 }
-.row{display:flex;gap:8px;margin-bottom:8px}
-button{
-  flex:1;border:0;border-radius:14px;
-  padding:12px 8px;font-weight:700;
-  color:white;background:#12213d;
+.row{
+  display:flex;
+  gap:6px;
+  margin-bottom:7px;
 }
-button.active{background:#0aa3ff}
-button.danger{background:#7b1111}
-label{font-size:12px;color:#bfefff}
-input[type=range]{width:100%}
-.notice{
-  font-size:11px;color:#ffd27a;text-align:center;margin-top:5px;
+label{
+  font-size:11px;
+  color:#bcefff;
+}
+input[type=range]{
+  width:100%;
+}
+.ok{color:#71ff9b}
+.bad{color:#ff7777}
+.warn{color:#ffd36a}
+.note{
+  font-size:10px;
+  text-align:center;
+  color:#ffd27a;
 }
 </style>
 </head>
+
 <body>
 <div id="app">
+
 <header>
-  <h1>🔭 Ultra Gök Bilimci Paneli</h1>
-  <p>Gece Görüş • Simüle Termal • Ay/Yıldız Gözlem • iPhone 14</p>
+  <h1>🔭 UltraTelescope AI PRO V4</h1>
+  <p>Gerçek GPS • Ay/Gezegen Bulucu • Gece Görüş • ChatGPT Astro AI</p>
 </header>
 
 <div id="viewer">
@@ -77,260 +185,562 @@ input[type=range]{width:100%}
   <canvas id="canvas"></canvas>
 
   <div id="hud">
-    <div class="card">
-      Mod<br><span id="modeText" class="big">Normal</span>
+    <div class="card">Mod<br><span id="modeText" class="big">Normal</span></div>
+    <div class="card">Zoom<br><span id="zoomText" class="big">1.0x</span></div>
+    <div class="card">Pusula<br><span id="compass" class="big">--°</span></div>
+    <div class="card">GPS<br><span id="locationText" class="big">Bekliyor</span></div>
+  </div>
+
+  <div id="targetPanel">
+    <div style="font-weight:900;color:#7df3ff">🌌 Gerçek Hedef Bulucu</div>
+
+    <div id="grid">
+      <button onclick="selectTarget('Moon')">🌙 Ay</button>
+      <button onclick="selectTarget('Sun')">☀️ Güneş</button>
+      <button onclick="selectTarget('Venus')">Venüs</button>
+      <button onclick="selectTarget('Mars')">Mars</button>
+      <button onclick="selectTarget('Jupiter')">Jüpiter</button>
+      <button onclick="selectTarget('Saturn')">Satürn</button>
+      <button onclick="selectTarget('Sirius')">Sirius</button>
+      <button onclick="selectTarget('Vega')">Vega</button>
     </div>
-    <div class="card">
-      Zoom<br><span id="zoomText" class="big">1.0x</span>
-    </div>
-    
-    <div class="card">
-      Pusula<br><span id="compass" class="big">--°</span>
-    </div>
-    <div class="card">
-      Konum<br><span id="loc" class="big">Bekleniyor</span>
+
+    <div id="result">
+      GPS izni ver, hedef seç. Uygulama gerçek yön/yükselim hesaplayacak.
     </div>
   </div>
-</div>
+
+  <div id="aiPanel">
+    <b style="color:#7df3ff">🤖 ChatGPT Astro AI</b>
+    <div class="row" style="margin-top:8px">
+      <button onclick="saveOpenAIKey()">🔑 API Key</button>
+      <button onclick="analyzeAstroImage()">🔍 AI Analiz</button>
+      <button onclick="clearAIKey()">🧹 Sil</button>
+    </div>
+    <div id="aiResult">
+      Kamera açıkken hedefe bak ve AI Analiz’e bas. API key kod içine yazılmaz; cihazda geçici saklanır.
+    </div>
+  </div>
+  </div>
 
 <div id="controls">
   <div class="row">
-    <button onclick="setMode('normal')" class="active" id="b-normal">Normal</button>
-    <button onclick="setMode('night')" id="b-night">Gece</button>
-    <button onclick="setMode('thermal')" id="b-thermal">Termal</button>
-    <button onclick="setMode('astro')" id="b-astro">Astro</button>
+    <button id="m-normal" class="active" onclick="setMode('normal')">Normal</button>
+    <button id="m-night" onclick="setMode('night')">Gece</button>
+    <button id="m-moon" onclick="setMode('moon')">Ay</button>
+    <button id="m-astro" onclick="setMode('astro')">Astro</button>
+    <button id="m-thermal" onclick="setMode('thermal')">Termal*</button>
   </div>
 
   <label>Zoom</label>
-  <input id="zoom" type="range" min="1" max="8" step="0.1" value="1">
+  <input id="zoom" type="range" min="1" max="20" step="0.1" value="1">
 
-  <label>Parlaklık / Kazanç</label>
-  <input id="gain" type="range" min="1" max="4" step="0.1" value="1.4">
+  <label>Işık / Kazanç</label>
+  <input id="gain" type="range" min="1" max="7" step="0.1" value="1.6">
+
+  <label>Keskinlik / Detay</label>
+  <input id="sharp" type="range" min="0" max="2.5" step="0.1" value="1">
 
   <div class="row">
-    <button onclick="takePhoto()">📸 Fotoğraf</button>
-    <button onclick="startCamera()">🎥 Kamera Aç</button>
+    <button onclick="startCamera()">🎥 Kamera</button>
+    <button onclick="getLocation()">📍 GPS</button>
+    <button onclick="takePhoto()">📸 Foto</button>
   </div>
 
-  <div class="notice">
-    Not: iPhone 14’te gerçek termal sensör yoktur. Termal mod görüntüyü yapay renk haritasına çevirir.
+  <div class="note">
+    *Gerçek termal için harici termal kamera gerekir. Bu mod kamera görüntüsünü yapay termal renklendirir.
   </div>
 </div>
+
 </div>
 
 <script>
-const video=document.getElementById("video");
-const canvas=document.getElementById("canvas");
-const ctx=canvas.getContext("2d",{willReadFrequently:true});
+const video = document.getElementById("video");
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d", { willReadFrequently:true });
 
-let mode="normal";
-let zoom=1;
-let gain=1.4;
-let stream=null;
+let mode = "normal";
+let zoom = 1;
+let gain = 1.6;
+let sharp = 1;
+
+let lat = null;
+let lon = null;
+let alt = 0;
+let heading = null;
+let selectedTarget = null;
+
+const stars = {
+  Sirius: { name:"Sirius", ra:6.7525, dec:-16.7161 },
+  Vega: { name:"Vega", ra:18.6156, dec:38.7837 }
+};
 
 async function startCamera(){
   try{
-    stream=await navigator.mediaDevices.getUserMedia({
+    const stream = await navigator.mediaDevices.getUserMedia({
       video:{
-        facingMode:{ideal:"environment"},
-        width:{ideal:1920},
-        height:{ideal:1080}
+        facingMode:{ ideal:"environment" },
+        width:{ ideal:1920 },
+        height:{ ideal:1080 }
       },
       audio:false
     });
-    video.srcObject=stream;
+
+    video.srcObject = stream;
     requestAnimationFrame(draw);
     getLocation();
     initCompass();
+
   }catch(e){
-    alert("Kamera açılamadı. Safari izinlerini kontrol et.");
+    alert("Kamera açılamadı. Safari kamera iznini kontrol et.");
   }
 }
 
 function setMode(m){
-  mode=m;
+  mode = m;
+
   document.getElementById("modeText").textContent =
-    m==="normal"?"Normal":
-    m==="night"?"Gece Görüş":
-    m==="thermal"?"Simüle Termal":"Astro";
-  document.querySelectorAll("button").forEach(b=>b.classList.remove("active"));
-  document.getElementById("b-"+m).classList.add("active");
+    m === "normal" ? "Normal" :
+    m === "night" ? "Gece" :
+    m === "moon" ? "Ay" :
+    m === "astro" ? "Astro" :
+    "Termal";
+
+  document.querySelectorAll("#controls button").forEach(b => b.classList.remove("active"));
+  const btn = document.getElementById("m-" + m);
+  if(btn) btn.classList.add("active");
 }
 
-document.getElementById("zoom").oninput=e=>{
-  zoom=parseFloat(e.target.value);
-  document.getElementById("zoomText").textContent=zoom.toFixed(1)+"x";
+document.getElementById("zoom").oninput = e => {
+  zoom = parseFloat(e.target.value);
+  document.getElementById("zoomText").textContent = zoom.toFixed(1) + "x";
 };
 
-document.getElementById("gain").oninput=e=>{
-  gain=parseFloat(e.target.value);
+document.getElementById("gain").oninput = e => {
+  gain = parseFloat(e.target.value);
+};
+
+document.getElementById("sharp").oninput = e => {
+  sharp = parseFloat(e.target.value);
 };
 
 function draw(){
   if(video.videoWidth){
-    canvas.width=video.videoWidth;
-    canvas.height=video.videoHeight;
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
 
-    const w=canvas.width/zoom;
-    const h=canvas.height/zoom;
-    const sx=(canvas.width-w)/2;
-    const sy=(canvas.height-h)/2;
+    const w = canvas.width / zoom;
+    const h = canvas.height / zoom;
+    const sx = (canvas.width - w) / 2;
+    const sy = (canvas.height - h) / 2;
 
-    ctx.drawImage(video,sx,sy,w,h,0,0,canvas.width,canvas.height);
+    ctx.drawImage(video, sx, sy, w, h, 0, 0, canvas.width, canvas.height);
 
-    let img=ctx.getImageData(0,0,canvas.width,canvas.height);
-    let d=img.data;
+    let img = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    let d = img.data;
 
-    for(let i=0;i<d.length;i+=4){
-      let r=d[i],g=d[i+1],b=d[i+2];
-      let lum=(r+g+b)/3;
+    for(let i=0; i<d.length; i+=4){
+      let r = d[i];
+      let g = d[i+1];
+      let b = d[i+2];
+      let lum = (r + g + b) / 3;
 
-      if(mode==="night"){
-        lum=Math.min(255,lum*gain*1.9);
-        d[i]=lum*0.15;
-        d[i+1]=Math.min(255,lum*1.4);
-        d[i+2]=lum*0.25;
+      if(mode === "night"){
+        let v = Math.min(255, lum * gain * 2.4);
+        d[i] = v * 0.12;
+        d[i+1] = Math.min(255, v * 1.55);
+        d[i+2] = v * 0.25;
       }
 
-      else if(mode==="thermal"){
-        let v=Math.min(255,lum*gain);
-        d[i]=v<85?0:v<170?(v-85)*3:255;
-        d[i+1]=v<85?v*3:v<170?255:255-(v-170)*2;
-        d[i+2]=v<85?255-v*2:v<170?80:0;
+      else if(mode === "moon"){
+        let v = Math.min(255, (lum - 18) * gain * 2.1);
+        let c = (v - 128) * 1.35 + 128;
+        c = Math.max(0, Math.min(255, c));
+        d[i] = c;
+        d[i+1] = c;
+        d[i+2] = c;
       }
 
-      else if(mode==="astro"){
-        let v=Math.min(255,lum*gain*2.4);
-        if(v>115){
-          d[i]=Math.min(255,v*1.25);
-          d[i+1]=Math.min(255,v*1.25);
-          d[i+2]=255;
+      else if(mode === "astro"){
+        let v = Math.min(255, lum * gain * 3.2);
+        if(v > 100){
+          d[i] = 255;
+          d[i+1] = 255;
+          d[i+2] = 255;
         }else{
-          d[i]=v*0.15;
-          d[i+1]=v*0.25;
-          d[i+2]=v*0.55;
+          d[i] = v * 0.08;
+          d[i+1] = v * 0.14;
+          d[i+2] = v * 0.55;
         }
       }
 
+      else if(mode === "thermal"){
+        let v = Math.min(255, lum * gain);
+        d[i] = v < 85 ? 0 : v < 170 ? (v - 85) * 3 : 255;
+        d[i+1] = v < 85 ? v * 3 : v < 170 ? 255 : 255 - (v - 170) * 2;
+        d[i+2] = v < 85 ? 255 - v * 2 : v < 170 ? 80 : 0;
+      }
+
       else{
-        d[i]=Math.min(255,r*gain);
-        d[i+1]=Math.min(255,g*gain);
-        d[i+2]=Math.min(255,b*gain);
+        d[i] = Math.min(255, r * gain);
+        d[i+1] = Math.min(255, g * gain);
+        d[i+2] = Math.min(255, b * gain);
       }
     }
 
-    ctx.putImageData(img,0,0);
+    ctx.putImageData(img, 0, 0);
+
+    if(sharp > 0) sharpenCanvas(sharp);
+
+    drawReticle();
+    detectBrightPoints();
   }
+
   requestAnimationFrame(draw);
 }
 
-function takePhoto(){
-  const a=document.createElement("a");
-  a.download="ultra-gok-bilimci-paneli.png";
-  a.href=canvas.toDataURL("image/png");
-  a.click();
+function sharpenCanvas(amount){
+  const w = canvas.width;
+  const h = canvas.height;
+
+  let img = ctx.getImageData(0, 0, w, h);
+  let d = img.data;
+  let copy = new Uint8ClampedArray(d);
+
+  for(let y=1; y<h-1; y++){
+    for(let x=1; x<w-1; x++){
+      let i = (y*w + x) * 4;
+
+      for(let c=0; c<3; c++){
+        let center = copy[i+c] * 5;
+        let around =
+          copy[i-4+c] +
+          copy[i+4+c] +
+          copy[i-w*4+c] +
+          copy[i+w*4+c];
+
+        d[i+c] = Math.max(
+          0,
+          Math.min(255, copy[i+c] + (center - around) * 0.18 * amount)
+        );
+      }
+    }
+  }
+
+  ctx.putImageData(img, 0, 0);
 }
 
-function getLocation(){
-  if(!navigator.geolocation)return;
-  navigator.geolocation.getCurrentPosition(pos=>{
-    const lat=pos.coords.latitude.toFixed(3);
-    const lon=pos.coords.longitude.toFixed(3);
-    document.getElementById("loc").textContent=lat+", "+lon;
-  },()=>{document.getElementById("loc").textContent="Kapalı"});
+function drawReticle(){
+  const w = canvas.width;
+  const h = canvas.height;
+
+  ctx.save();
+  ctx.strokeStyle = "rgba(120,240,255,.85)";
+  ctx.lineWidth = 2;
+
+  ctx.beginPath();
+  ctx.moveTo(w/2 - 38, h/2);
+  ctx.lineTo(w/2 + 38, h/2);
+  ctx.moveTo(w/2, h/2 - 38);
+  ctx.lineTo(w/2, h/2 + 38);
+  ctx.stroke();
+
+  ctx.beginPath();
+  ctx.arc(w/2, h/2, 58, 0, Math.PI * 2);
+  ctx.stroke();
+
+  ctx.restore();
+}
+
+function detectBrightPoints(){
+  if(mode !== "astro") return;
+
+  const w = canvas.width;
+  const h = canvas.height;
+  const img = ctx.getImageData(0, 0, w, h).data;
+
+  ctx.save();
+  ctx.strokeStyle = "rgba(255,255,180,.9)";
+  ctx.lineWidth = 2;
+
+  let count = 0;
+
+  for(let y=30; y<h-30; y+=18){
+    for(let x=30; x<w-30; x+=18){
+      let i = (y*w + x) * 4;
+      let lum = (img[i] + img[i+1] + img[i+2]) / 3;
+
+      if(lum > 220 && count < 45){
+        ctx.beginPath();
+        ctx.arc(x, y, 8, 0, Math.PI * 2);
+        ctx.stroke();
+        count++;
+      }
+    }
+  }
+
+  ctx.restore();
+}
+  function getLocation(){
+  if(!navigator.geolocation){
+    alert("GPS desteklenmiyor.");
+    return;
+  }
+
+  navigator.geolocation.getCurrentPosition(pos => {
+    lat = pos.coords.latitude;
+    lon = pos.coords.longitude;
+    alt = pos.coords.altitude || 0;
+
+    document.getElementById("locationText").textContent =
+      lat.toFixed(3) + ", " + lon.toFixed(3);
+
+    updateTarget();
+
+  }, () => {
+    document.getElementById("locationText").textContent = "Kapalı";
+  }, {
+    enableHighAccuracy:true,
+    timeout:10000,
+    maximumAge:1000
+  });
 }
 
 function initCompass(){
-  if(typeof DeviceOrientationEvent!=="undefined" &&
-     typeof DeviceOrientationEvent.requestPermission==="function"){
-    DeviceOrientationEvent.requestPermission().then(res=>{
-      if(res==="granted"){
-        window.addEventListener("deviceorientation",handleOrientation);
+  if(typeof DeviceOrientationEvent !== "undefined" &&
+     typeof DeviceOrientationEvent.requestPermission === "function"){
+
+    DeviceOrientationEvent.requestPermission().then(res => {
+      if(res === "granted"){
+        window.addEventListener("deviceorientation", handleOrientation, true);
       }
     });
+
   }else{
-    window.addEventListener("deviceorientation",handleOrientation);
+    window.addEventListener("deviceorientation", handleOrientation, true);
   }
 }
 
 function handleOrientation(e){
-  let heading=e.webkitCompassHeading || (360-e.alpha);
-  if(heading){
-    document.getElementById("compass").textContent=Math.round(heading)+"°";
+  let h = e.webkitCompassHeading || (360 - e.alpha);
+
+  if(h !== null && !isNaN(h)){
+    heading = h;
+    document.getElementById("compass").textContent = Math.round(h) + "°";
+    updateTarget();
   }
 }
 
+function selectTarget(name){
+  selectedTarget = name;
+  updateTarget();
+}
+
+function updateTarget(){
+  if(!selectedTarget) return;
+
+  if(lat === null || lon === null){
+    document.getElementById("result").innerHTML =
+      "<span class='warn'>GPS bekleniyor.</span> 📍 GPS butonuna bas.";
+    return;
+  }
+
+  try{
+    const now = new Date();
+    const observer = new Astronomy.Observer(lat, lon, alt);
+
+    let displayName = selectedTarget;
+    let az, altitude, ra, dec;
+
+    if(stars[selectedTarget]){
+      const s = stars[selectedTarget];
+
+      displayName = s.name;
+      ra = s.ra;
+      dec = s.dec;
+
+      const hor = Astronomy.Horizon(now, observer, ra, dec, "normal");
+      az = hor.azimuth;
+      altitude = hor.altitude;
+
+    }else{
+      const equ = Astronomy.Equator(
+        Astronomy.Body[selectedTarget],
+        now,
+        observer,
+        true,
+        true
+      );
+
+      ra = equ.ra;
+      dec = equ.dec;
+
+      const hor = Astronomy.Horizon(now, observer, ra, dec, "normal");
+      az = hor.azimuth;
+      altitude = hor.altitude;
+    }
+
+    const diff = heading === null ? null : angleDiff(heading, az);
+
+    let extra = "";
+
+    if(selectedTarget === "Moon"){
+      extra =
+        "<br>Ay Faz Açısı: <b>" +
+        Astronomy.MoonPhase(now).toFixed(1) +
+        "°</b>";
+    }
+
+    document.getElementById("result").innerHTML =
+      "Hedef: <b>" + displayName + "</b><br>" +
+      "Yön: <b>" + az.toFixed(1) + "° / " + azToDirection(az) + "</b><br>" +
+      "Yükselim: <b>" + altitude.toFixed(1) + "°</b><br>" +
+      "RA/DEC: <b>" + ra.toFixed(3) + "h / " + dec.toFixed(2) + "°</b>" +
+      extra +
+      "<br>Durum: <b class='" + (altitude > 0 ? "ok" : "bad") + "'>" +
+      (altitude > 0 ? "Ufkun üstünde" : "Ufkun altında") +
+      "</b><br>" +
+      "Telefon farkı: <b>" + (diff === null ? "--" : diff.toFixed(0) + "°") + "</b><br>" +
+      "Kılavuz: <b>" + (diff === null ? "Pusula izni ver." : guideText(diff, heading, az)) + "</b>";
+
+  }catch(e){
+    document.getElementById("result").innerHTML =
+      "<span class='bad'>Hata:</span> " + e.message;
+  }
+}
+
+function azToDirection(az){
+  const dirs = [
+    "Kuzey",
+    "Kuzeydoğu",
+    "Doğu",
+    "Güneydoğu",
+    "Güney",
+    "Güneybatı",
+    "Batı",
+    "Kuzeybatı"
+  ];
+
+  return dirs[Math.round(az / 45) % 8];
+}
+
+function angleDiff(a, b){
+  let d = Math.abs(a - b) % 360;
+  return d > 180 ? 360 - d : d;
+}
+
+function guideText(diff, head, az){
+  if(diff < 8) return "Tam hedefe bakıyorsun.";
+
+  let right = ((az - head + 360) % 360) < 180;
+  return right ? "Telefonu sağa çevir." : "Telefonu sola çevir.";
+}
+
+function takePhoto(){
+  const a = document.createElement("a");
+  a.download = "UltraTelescope-AI-PRO-V4.png";
+  a.href = canvas.toDataURL("image/png");
+  a.click();
+}
+
+function saveOpenAIKey(){
+  const key = prompt("OpenAI API key gir. Kod içine kaydedilmez, sadece bu cihazda saklanır:");
+
+  if(key){
+    localStorage.setItem("OPENAI_API_KEY", key.trim());
+    alert("API key bu cihazda kaydedildi.");
+  }
+}
+
+function clearAIKey(){
+  localStorage.removeItem("OPENAI_API_KEY");
+  alert("API key silindi.");
+}
+
+async function analyzeAstroImage(){
+  const key = localStorage.getItem("OPENAI_API_KEY");
+
+  if(!key){
+    alert("Önce API key gir.");
+    return;
+  }
+
+  const aiBox = document.getElementById("aiResult");
+  aiBox.innerHTML = "🤖 ChatGPT görüntüyü analiz ediyor...";
+
+  try{
+    const small = document.createElement("canvas");
+    small.width = 512;
+    small.height = 512;
+
+    const sctx = small.getContext("2d");
+    sctx.drawImage(canvas, 0, 0, 512, 512);
+
+    const imageBase64 = small.toDataURL("image/jpeg", 0.75);
+
+    const promptText = `
+Sen profesyonel bir astronomi gözlem asistanısın.
+Bu iPhone kamera görüntüsünü analiz et.
+
+Kısa ve net cevap ver:
+1. Görüntüde Ay, yıldız, gezegen, ışık kirliliği, lens parlaması veya kamera gürültüsü var mı?
+2. Bu görüntü astronomik gözlem için uygun mu?
+3. Hangi modu önerirsin: Normal, Gece, Ay, Astro veya Termal?
+4. Zoom, ışık kazancı ve keskinlik için öneri ver.
+5. Seçili hedefe göre kullanıcı telefonu hangi yöne çevirmeli?
+
+Mevcut veriler:
+Konum: ${lat || "bilinmiyor"}, ${lon || "bilinmiyor"}
+Seçili hedef: ${selectedTarget || "yok"}
+Pusula: ${heading || "bilinmiyor"}
+Kamera modu: ${mode}
+Zoom: ${zoom}
+Işık kazancı: ${gain}
+Keskinlik: ${sharp}
+`;
+
+    const res = await fetch("https://api.openai.com/v1/responses", {
+      method: "POST",
+      headers: {
+        "Authorization": "Bearer " + key,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        model: "gpt-5.1",
+        input: [
+          {
+            role: "user",
+            content: [
+              { type: "input_text", text: promptText },
+              { type: "input_image", image_url: imageBase64 }
+            ]
+          }
+        ]
+      })
+    });
+
+    const data = await res.json();
+
+    if(data.error){
+      aiBox.innerHTML = "❌ API hata: " + data.error.message;
+      return;
+    }
+
+    const text =
+      data.output_text ||
+      data.output?.[0]?.content?.[0]?.text ||
+      data.output?.[0]?.content?.[1]?.text ||
+      "Cevap alınamadı.";
+
+    aiBox.innerHTML = text.replace(/\n/g, "<br>");
+
+  }catch(e){
+    aiBox.innerHTML = "❌ Bağlantı/analiz hatası: " + e.message;
+  }
+}
+
+setInterval(updateTarget, 1500);
 startCamera();
-</script>
-  <script src="indi-bridge.js"></script>
-<div style="position:absolute;bottom:170px;left:10px;right:10px;z-index:99;">
-  <button onclick="INDIBridge.connectServer(prompt('INDI Server IP'))"
-   style="width:100%;padding:14px;border:none;border-radius:15px;background:#071f44;color:white;font-weight:700;">
-   🔭 INDI Server Bağlan
-  </button>
-
-  <button onclick="INDIBridge.gotoTarget(5.23,-8.20)"
-   style="width:100%;padding:14px;border:none;border-radius:15px;background:#0b355f;color:white;font-weight:700;margin-top:8px;">
-   🌙 Ay Koordinatına Git
-  </button>
-
-  <button onclick="INDIBridge.captureExposure(3)"
-   style="width:100%;padding:14px;border:none;border-radius:15px;background:#12486f;color:white;font-weight:700;margin-top:8px;">
-   📸 3sn CCD Pozlama
-  </button>
-</div>
-  <div id="astroFinder" style="
-position:absolute;top:115px;left:10px;right:10px;z-index:120;
-background:rgba(0,0,0,.55);border:1px solid rgba(120,220,255,.35);
-border-radius:18px;padding:10px;backdrop-filter:blur(16px);color:white;
-font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;">
-
-  <div style="font-weight:800;font-size:15px;margin-bottom:8px;color:#7df3ff;">
-    🌌 Astro Target Finder V2
-  </div>
-
-  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;">
-    <button onclick="astroTarget('Ay')" class="astroBtn">🌙 Ay</button>
-    <button onclick="astroTarget('Jüpiter')" class="astroBtn">🪐 Jüpiter</button>
-    <button onclick="astroTarget('Satürn')" class="astroBtn">🪐 Satürn</button>
-    <button onclick="astroTarget('Sirius')" class="astroBtn">⭐ Sirius</button>
-    <button onclick="astroTarget('Samanyolu')" class="astroBtn">🌌 Samanyolu</button>
-    <button onclick="astroTarget('ISS')" class="astroBtn">🛰️ ISS</button>
-  </div>
-
-  <div style="margin-top:10px;font-size:13px;line-height:1.55;">
-    <div>Hedef: <b id="targetName">Seçilmedi</b></div>
-    <div>Yön: <b id="targetDir">--</b></div>
-    <div>Yükselim: <b id="targetAlt">--°</b></div>
-    <div>Gözlem Skoru: <b id="targetScore">--</b></div>
-  </div>
-</div>
-
-<style>
-.astroBtn{
-  border:0;border-radius:12px;padding:9px 4px;
-  background:#08223f;color:white;font-weight:700;font-size:12px;
-}
-.astroBtn:active{background:#0aa3ff;}
-</style>
-
-<script>
-function astroTarget(name){
-  const data = {
-    "Ay": ["Güneydoğu", 42, "Çok iyi"],
-    "Jüpiter": ["Doğu", 35, "İyi"],
-    "Satürn": ["Güney", 28, "Orta"],
-    "Sirius": ["Güneybatı", 51, "Çok iyi"],
-    "Samanyolu": ["Güney", 24, "Karanlık ortam gerekli"],
-    "ISS": ["Değişken", 65, "Canlı veri gerekir"]
-  };
-
-  const t = data[name];
-  document.getElementById("targetName").textContent = name;
-  document.getElementById("targetDir").textContent = t[0];
-  document.getElementById("targetAlt").textContent = t[1] + "°";
-  document.getElementById("targetScore").textContent = t[2];
-}
 </script>
 </body>
 </html>
