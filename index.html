@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
-<title>UltraTelescope Offline AI PRO V5</title>
+<title>UltraTelescope AI Tracking PRO V6</title>
 
 <script src="https://cdn.jsdelivr.net/npm/astronomy-engine@2.1.19/astronomy.browser.min.js"></script>
 
@@ -26,12 +26,12 @@ html,body{
   background:radial-gradient(circle at top,#102b5f,#02050d 66%);
 }
 header{
-  padding:9px 8px;
+  padding:8px;
   text-align:center;
-  background:rgba(0,0,0,.80);
+  background:rgba(0,0,0,.82);
   backdrop-filter:blur(18px);
   border-bottom:1px solid rgba(120,220,255,.28);
-  z-index:50;
+  z-index:80;
 }
 h1{
   font-size:17px;
@@ -58,16 +58,16 @@ video,canvas{
 }
 #hud{
   position:absolute;
-  top:9px;
-  left:9px;
-  right:9px;
+  top:8px;
+  left:8px;
+  right:8px;
   display:grid;
   grid-template-columns:1fr 1fr;
-  gap:7px;
+  gap:6px;
   z-index:10;
 }
 .card{
-  background:rgba(0,0,0,.57);
+  background:rgba(0,0,0,.58);
   border:1px solid rgba(120,220,255,.30);
   border-radius:14px;
   padding:7px;
@@ -79,16 +79,38 @@ video,canvas{
   font-weight:900;
   color:#69f3ff;
 }
+#lockHud{
+  position:absolute;
+  top:126px;
+  left:8px;
+  right:8px;
+  z-index:18;
+  background:rgba(0,0,0,.66);
+  border:1px solid rgba(255,222,90,.55);
+  border-radius:16px;
+  padding:8px;
+  backdrop-filter:blur(16px);
+}
+#lockTitle{
+  font-weight:900;
+  color:#ffe56a;
+  font-size:13px;
+}
+#lockInfo{
+  margin-top:5px;
+  font-size:11.5px;
+  line-height:1.42;
+}
 #targetPanel{
   position:absolute;
-  left:9px;
-  right:9px;
-  bottom:315px;
+  left:8px;
+  right:8px;
+  bottom:322px;
   z-index:20;
   background:rgba(0,0,0,.70);
   border:1px solid rgba(120,220,255,.38);
   border-radius:18px;
-  padding:9px;
+  padding:8px;
   backdrop-filter:blur(18px);
 }
 #grid{
@@ -109,6 +131,9 @@ button{
 button.active{
   background:#0aa3ff;
 }
+button.lockActive{
+  background:#8c6b00;
+}
 button:active{
   transform:scale(.98);
 }
@@ -119,19 +144,19 @@ button:active{
   padding:8px;
   font-size:11.5px;
   line-height:1.45;
-  max-height:105px;
+  max-height:88px;
   overflow:auto;
 }
 #offlineAiPanel{
   position:absolute;
-  left:9px;
-  right:9px;
+  left:8px;
+  right:8px;
   bottom:138px;
   z-index:25;
   background:rgba(0,0,0,.76);
   border:1px solid rgba(86,234,255,.50);
   border-radius:18px;
-  padding:9px;
+  padding:8px;
   backdrop-filter:blur(18px);
 }
 #aiResult{
@@ -141,7 +166,7 @@ button:active{
   padding:8px;
   font-size:11.5px;
   line-height:1.42;
-  max-height:125px;
+  max-height:112px;
   overflow:auto;
 }
 #aiMeters{
@@ -163,10 +188,10 @@ button:active{
   font-size:13px;
 }
 #controls{
-  background:rgba(0,0,0,.88);
+  background:rgba(0,0,0,.89);
   padding:7px 8px;
   border-top:1px solid rgba(120,220,255,.25);
-  z-index:60;
+  z-index:90;
   backdrop-filter:blur(20px);
 }
 .row{
@@ -184,8 +209,9 @@ input[type=range]{
 .ok{color:#71ff9b}
 .bad{color:#ff7777}
 .warn{color:#ffd36a}
+.gold{color:#ffe56a}
 .note{
-  font-size:9.7px;
+  font-size:9.6px;
   text-align:center;
   color:#ffd27a;
 }
@@ -205,8 +231,8 @@ input[type=range]{
 <div id="app">
 
 <header>
-  <h1>🔭 UltraTelescope OFFLINE AI PRO V5</h1>
-  <p>Gerçek GPS • Ay/Gezegen Bulucu • Gece Görüş • Offline Astro AI</p>
+  <h1>🔭 UltraTelescope AI TRACKING PRO V6</h1>
+  <p>Gerçek GPS • Offline AI • Target Lock • Gece Görüş • Ay/Gezegen Takip</p>
 </header>
 
 <div id="viewer">
@@ -218,6 +244,13 @@ input[type=range]{
     <div class="card">Zoom<br><span id="zoomText" class="big">1.0x</span></div>
     <div class="card">Pusula<br><span id="compass" class="big">--°</span></div>
     <div class="card">GPS<br><span id="locationText" class="big">Bekliyor</span></div>
+  </div>
+
+  <div id="lockHud">
+    <div id="lockTitle">🎯 TARGET LOCK: PASİF</div>
+    <div id="lockInfo">
+      Kilit açıldığında kamera görüntüsündeki en parlak gök cismini bulur, kutuya alır ve merkeze yönlendirir.
+    </div>
   </div>
 
   <div id="targetPanel">
@@ -243,12 +276,12 @@ input[type=range]{
 
   <div id="offlineAiPanel">
     <div style="font-weight:900;color:#7df3ff">
-      🧠 Offline Astro AI Motoru <span class="badge">API yok</span>
+      🧠 Offline Astro AI + Tracking <span class="badge">API yok</span>
     </div>
 
     <div class="row" style="margin-top:7px">
       <button onclick="runOfflineAI()">🔍 AI Analiz</button>
-      <button onclick="toggleAutoAI()">⚡ Canlı AI</button>
+      <button id="lockBtn" onclick="toggleTrackingLock()">🎯 Lock</button>
       <button onclick="autoTune()">🎚️ Auto Ayar</button>
     </div>
 
@@ -256,11 +289,11 @@ input[type=range]{
       <div class="meter">Netlik<b id="mSharp">--</b></div>
       <div class="meter">Parlaklık<b id="mBright">--</b></div>
       <div class="meter">Merkez<b id="mCenter">--</b></div>
-      <div class="meter">Tespit<b id="mDetect">--</b></div>
+      <div class="meter">Kilit<b id="mDetect">--</b></div>
     </div>
 
     <div id="aiResult">
-      Kamera açıkken hedefe bak ve AI Analiz’e bas. Görüntü dışarı gönderilmez.
+      Kamera açıkken hedefe bak. Lock aktifken en parlak gök cismi canlı takip edilir.
     </div>
   </div>
   </div>
@@ -312,8 +345,8 @@ let alt = 0;
 let heading = null;
 let selectedTarget = null;
 
-let autoAI = false;
-let lastAIResult = null;
+let trackingLock = false;
+let currentLock = null;
 
 const stars = {
   Sirius: { name:"Sirius", ra:6.7525, dec:-16.7161 },
@@ -438,7 +471,14 @@ function draw(){
     if(sharp > 0) sharpenCanvas(sharp);
 
     drawReticle();
-    detectBrightPointsOverlay();
+
+    if(mode === "astro") detectBrightPointsOverlay();
+
+    if(trackingLock){
+      currentLock = findBrightestTarget();
+      drawTrackingBox(currentLock);
+      updateLockHud(currentLock);
+    }
   }
 
   requestAnimationFrame(draw);
@@ -497,8 +537,6 @@ function drawReticle(){
 }
 
 function detectBrightPointsOverlay(){
-  if(mode !== "astro") return;
-
   const w = canvas.width;
   const h = canvas.height;
 
@@ -529,7 +567,151 @@ function detectBrightPointsOverlay(){
   ctx.restore();
 }
 
-function getLocation(){
+function findBrightestTarget(){
+  const w = canvas.width;
+  const h = canvas.height;
+
+  if(!w || !h) return null;
+
+  const img = ctx.getImageData(0, 0, w, h).data;
+
+  let best = {
+    x:0,
+    y:0,
+    lum:0,
+    confidence:0,
+    size:30
+  };
+
+  for(let y=40; y<h-40; y+=10){
+    for(let x=40; x<w-40; x+=10){
+      let i = (y*w + x) * 4;
+      let r = img[i];
+      let g = img[i+1];
+      let b = img[i+2];
+      let lum = (r + g + b) / 3;
+
+      if(lum > best.lum){
+        best.x = x;
+        best.y = y;
+        best.lum = lum;
+      }
+    }
+  }
+
+  let localBright = 0;
+  let total = 0;
+
+  for(let yy=-30; yy<=30; yy+=6){
+    for(let xx=-30; xx<=30; xx+=6){
+      let px = Math.max(0, Math.min(w-1, best.x + xx));
+      let py = Math.max(0, Math.min(h-1, best.y + yy));
+      let i = (py*w + px) * 4;
+      let lum = (img[i] + img[i+1] + img[i+2]) / 3;
+
+      if(lum > 180) localBright++;
+      total++;
+    }
+  }
+
+  best.confidence = Math.min(100, Math.round((best.lum / 255) * 55 + (localBright / total) * 45));
+  best.size = best.confidence > 80 ? 92 : best.confidence > 60 ? 72 : 54;
+
+  if(best.lum < 120){
+    best.confidence = 0;
+  }
+
+  return best;
+}
+
+function drawTrackingBox(lock){
+  if(!lock || lock.confidence <= 0) return;
+
+  const w = canvas.width;
+  const h = canvas.height;
+  const s = lock.size;
+
+  ctx.save();
+
+  ctx.strokeStyle = "rgba(255,225,70,.95)";
+  ctx.lineWidth = 4;
+  ctx.strokeRect(lock.x - s/2, lock.y - s/2, s, s);
+
+  ctx.strokeStyle = "rgba(255,255,255,.9)";
+  ctx.lineWidth = 2;
+
+  ctx.beginPath();
+  ctx.moveTo(lock.x - 22, lock.y);
+  ctx.lineTo(lock.x + 22, lock.y);
+  ctx.moveTo(lock.x, lock.y - 22);
+  ctx.lineTo(lock.x, lock.y + 22);
+  ctx.stroke();
+
+  ctx.fillStyle = "rgba(0,0,0,.65)";
+  ctx.fillRect(lock.x - s/2, lock.y - s/2 - 26, 145, 22);
+
+  ctx.fillStyle = "#ffe56a";
+  ctx.font = "18px -apple-system";
+  ctx.fillText("LOCK " + lock.confidence + "%", lock.x - s/2 + 8, lock.y - s/2 - 8);
+
+  ctx.restore();
+}
+
+function updateLockHud(lock){
+  const title = document.getElementById("lockTitle");
+  const info = document.getElementById("lockInfo");
+  const meter = document.getElementById("mDetect");
+
+  if(!trackingLock){
+    title.innerHTML = "🎯 TARGET LOCK: PASİF";
+    info.innerHTML = "Lock kapalı.";
+    meter.textContent = "--";
+    return;
+  }
+
+  if(!lock || lock.confidence <= 0){
+    title.innerHTML = "🎯 TARGET LOCK: ARANIYOR";
+    info.innerHTML = "Parlak hedef bulunamadı. Astro/Gece modunu dene, kazancı artır.";
+    meter.textContent = "Yok";
+    return;
+  }
+
+  const w = canvas.width;
+  const h = canvas.height;
+  const dx = lock.x - w/2;
+  const dy = lock.y - h/2;
+
+  let cmdX = Math.abs(dx) < 35 ? "yatay iyi" : dx > 0 ? "telefonu sağa değil, hedefi merkeze almak için hafif sağa kaydır" : "telefonu hafif sola kaydır";
+  let cmdY = Math.abs(dy) < 35 ? "dikey iyi" : dy > 0 ? "telefonu hafif aşağı indir" : "telefonu hafif yukarı kaldır";
+
+  let status = lock.confidence > 82 ? "KİLİT GÜÇLÜ" : lock.confidence > 55 ? "KİLİT ORTA" : "KİLİT ZAYIF";
+
+  title.innerHTML = "🎯 TARGET LOCK: <span class='gold'>" + status + "</span>";
+
+  info.innerHTML =
+    "Güven: <b>" + lock.confidence + "%</b> | " +
+    "Offset X: <b>" + Math.round(dx) + "</b> Y: <b>" + Math.round(dy) + "</b><br>" +
+    "Komut: <b>" + cmdX + " / " + cmdY + "</b>";
+
+  meter.textContent = lock.confidence + "%";
+}
+
+function toggleTrackingLock(){
+  trackingLock = !trackingLock;
+
+  const btn = document.getElementById("lockBtn");
+
+  if(trackingLock){
+    btn.classList.add("lockActive");
+    document.getElementById("lockTitle").innerHTML = "🎯 TARGET LOCK: ARANIYOR";
+    document.getElementById("lockInfo").innerHTML = "En parlak hedef aranıyor...";
+  }else{
+    btn.classList.remove("lockActive");
+    currentLock = null;
+    updateLockHud(null);
+  }
+}
+  function getLocation(){
   if(!navigator.geolocation){
     alert("GPS desteklenmiyor.");
     return;
@@ -686,11 +868,12 @@ function guideText(diff, head, az){
 
 function takePhoto(){
   const a = document.createElement("a");
-  a.download = "UltraTelescope-OFFLINE-AI-PRO-V5.png";
+  a.download = "UltraTelescope-AI-TRACKING-PRO-V6.png";
   a.href = canvas.toDataURL("image/png");
   a.click();
 }
-  function sampleFrameStats(){
+
+function sampleFrameStats(){
   const w = canvas.width;
   const h = canvas.height;
 
@@ -748,6 +931,12 @@ function runOfflineAI(){
   let comment = [];
   let score = 0;
 
+  if(currentLock && currentLock.confidence > 55){
+    detect = "Kilitli parlak hedef";
+    score += currentLock.confidence * 0.45;
+    comment.push("Tracking Lock hedefi yakaladı.");
+  }
+
   if(stats.avgBrightness > 150 && stats.centerScore > 15){
     detect = "Ay benzeri parlak disk";
     score += 30;
@@ -779,10 +968,11 @@ function runOfflineAI(){
     comment.push("Seçili hedef ile görüntü uyumlu.");
   }
 
+  score = Math.min(100, Math.round(score));
+
   document.getElementById("mSharp").textContent = Math.round(stats.sharpness);
   document.getElementById("mBright").textContent = Math.round(stats.avgBrightness);
   document.getElementById("mCenter").textContent = stats.centerScore;
-  document.getElementById("mDetect").textContent = detect;
 
   let advice = [];
 
@@ -793,23 +983,13 @@ function runOfflineAI(){
   if(mode !== "moon" && detect.includes("Ay")) advice.push("Ay moduna geç.");
   if(mode !== "astro" && detect.includes("Yıldız")) advice.push("Astro moduna geç.");
   if(zoom < 8 && detect !== "Belirsiz") advice.push("Zoom artır.");
-
-  lastAIResult = {
-    score,
-    detect,
-    advice
-  };
+  if(!trackingLock) advice.push("Tracking Lock aç.");
 
   document.getElementById("aiResult").innerHTML =
     "AI Tespit: <b>" + detect + "</b><br>" +
     "Gözlem Skoru: <b>" + score + "/100</b><br>" +
     comment.join(" ") + "<br><br>" +
     "Öneri: <b>" + (advice.length ? advice.join(" | ") : "Ayarlar iyi görünüyor.") + "</b>";
-}
-
-function toggleAutoAI(){
-  autoAI = !autoAI;
-  alert(autoAI ? "Canlı AI aktif." : "Canlı AI kapalı.");
 }
 
 function autoTune(){
@@ -821,7 +1001,11 @@ function autoTune(){
 
   if(stats.sharpness < 11) sharp = Math.min(2.5, sharp + 0.2);
 
-  if(stats.centerScore > 10 && zoom < 14) zoom += 0.5;
+  if(currentLock && currentLock.confidence > 60 && zoom < 16){
+    zoom += 0.5;
+  }else if(stats.centerScore > 10 && zoom < 14){
+    zoom += 0.4;
+  }
 
   document.getElementById("gain").value = gain;
   document.getElementById("sharp").value = sharp;
@@ -832,10 +1016,7 @@ function autoTune(){
 }
 
 setInterval(updateTarget,1500);
-
-setInterval(()=>{
-  if(autoAI) runOfflineAI();
-},2500);
+setInterval(runOfflineAI,3000);
 
 startCamera();
 </script>
