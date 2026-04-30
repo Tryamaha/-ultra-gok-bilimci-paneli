@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Ultra Gök Bilimci Paneli</title>
+<style>
+*{box-sizing:border-box}
+body{
+  margin:0;background:#02040a;color:white;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  overflow:hidden;
+}
+#app{
+  height:100vh;display:flex;flex-direction:column;
+  background:radial-gradient(circle at top,#102040,#02040a 65%);
+}
+header{
+  padding:14px;text-align:center;
+  background:rgba(0,0,0,.55);backdrop-filter:blur(18px);
+  border-bottom:1px solid rgba(255,255,255,.12);
+}
+header h1{font-size:18px;margin:0}
+header p{font-size:12px;margin:4px 0 0;color:#9bdcff}
+
+#viewer{
+  position:relative;flex:1;overflow:hidden;background:#000;
+}
+video,canvas{
+  position:absolute;inset:0;width:100%;height:100%;
+  object-fit:cover;
+}
+#hud{
+  position:absolute;top:12px;left:12px;right:12px;
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:8px;z-index:5;
+}
+.card{
+  background:rgba(0,0,0,.45);
+  border:1px solid rgba(255,255,255,.15);
+  border-radius:14px;padding:10px;
+  backdrop-filter:blur(14px);
+  font-size:12px;
+}
+.big{font-size:18px;font-weight:700;color:#75f5ff}
+
+#controls{
+  background:rgba(0,0,0,.72);
+  padding:10px;
+  border-top:1px solid rgba(255,255,255,.14);
+  backdrop-filter:blur(20px);
+}
+.row{display:flex;gap:8px;margin-bottom:8px}
+button{
+  flex:1;border:0;border-radius:14px;
+  padding:12px 8px;font-weight:700;
+  color:white;background:#12213d;
+}
+button.active{background:#0aa3ff}
+button.danger{background:#7b1111}
+label{font-size:12px;color:#bfefff}
+input[type=range]{width:100%}
+.notice{
+  font-size:11px;color:#ffd27a;text-align:center;margin-top:5px;
+}
+</style>
+</head>
+<body>
+<div id="app">
+<header>
+  <h1>🔭 Ultra Gök Bilimci Paneli</h1>
+  <p>Gece Görüş • Simüle Termal • Ay/Yıldız Gözlem • iPhone 14</p>
+</header>
+
+<div id="viewer">
+  <video id="video" autoplay playsinline muted></video>
+  <canvas id="canvas"></canvas>
+
+  <div id="hud">
+    <div class="card">
+      Mod<br><span id="modeText" class="big">Normal</span>
+    </div>
+    <div class="card">
+      Zoom<br><span id="zoomText" class="big">1.0x</span>
+    </div>
+    <div class="card">
+      Pusula<br><span id="compass" class="big">--°</span>
+    </div>
+    <div class="card">
+      Konum<br><span id="loc" class="big">Bekleniyor</span>
+    </div>
+  </div>
+</div>
+
+<div id="controls">
+  <div class="row">
+    <button onclick="setMode('normal')" class="active" id="b-normal">Normal</button>
+    <button onclick="setMode('night')" id="b-night">Gece</button>
+    <button onclick="setMode('thermal')" id="b-thermal">Termal</button>
+    <button onclick="setMode('astro')" id="b-astro">Astro</button>
+  </div>
+
+  <label>Zoom</label>
+  <input id="zoom" type="range" min="1" max="8" step="0.1" value="1">
+
+  <label>Parlaklık / Kazanç</label>
+  <input id="gain" type="range" min="1" max="4" step="0.1" value="1.4">
+
+  <div class="row">
+    <button onclick="takePhoto()">📸 Fotoğraf</button>
+    <button onclick="startCamera()">🎥 Kamera Aç</button>
+  </div>
+
+  <div class="notice">
+    Not: iPhone 14’te gerçek termal sensör yoktur. Termal mod görüntüyü yapay renk haritasına çevirir.
+  </div>
+</div>
+</div>
+
+<script>
+const video=document.getElementById("video");
+const canvas=document.getElementById("canvas");
+const ctx=canvas.getContext("2d",{willReadFrequently:true});
+
+let mode="normal";
+let zoom=1;
+let gain=1.4;
+let stream=null;
+
+async function startCamera(){
+  try{
+    stream=await navigator.mediaDevices.getUserMedia({
+      video:{
+        facingMode:{ideal:"environment"},
+        width:{ideal:1920},
+        height:{ideal:1080}
+      },
+      audio:false
+    });
+    video.srcObject=stream;
+    requestAnimationFrame(draw);
+    getLocation();
+    initCompass();
+  }catch(e){
+    alert("Kamera açılamadı. Safari izinlerini kontrol et.");
+  }
+}
+
+function setMode(m){
+  mode=m;
+  document.getElementById("modeText").textContent =
+    m==="normal"?"Normal":
+    m==="night"?"Gece Görüş":
+    m==="thermal"?"Simüle Termal":"Astro";
+  document.querySelectorAll("button").forEach(b=>b.classList.remove("active"));
+  document.getElementById("b-"+m).classList.add("active");
+}
+
+document.getElementById("zoom").oninput=e=>{
+  zoom=parseFloat(e.target.value);
+  document.getElementById("zoomText").textContent=zoom.toFixed(1)+"x";
+};
+
+document.getElementById("gain").oninput=e=>{
+  gain=parseFloat(e.target.value);
+};
+
+function draw(){
+  if(video.videoWidth){
+    canvas.width=video.videoWidth;
+    canvas.height=video.videoHeight;
+
+    const w=canvas.width/zoom;
+    const h=canvas.height/zoom;
+    const sx=(canvas.width-w)/2;
+    const sy=(canvas.height-h)/2;
+
+    ctx.drawImage(video,sx,sy,w,h,0,0,canvas.width,canvas.height);
+
+    let img=ctx.getImageData(0,0,canvas.width,canvas.height);
+    let d=img.data;
+
+    for(let i=0;i<d.length;i+=4){
+      let r=d[i],g=d[i+1],b=d[i+2];
+      let lum=(r+g+b)/3;
+
+      if(mode==="night"){
+        lum=Math.min(255,lum*gain*1.9);
+        d[i]=lum*0.15;
+        d[i+1]=Math.min(255,lum*1.4);
+        d[i+2]=lum*0.25;
+      }
+
+      else if(mode==="thermal"){
+        let v=Math.min(255,lum*gain);
+        d[i]=v<85?0:v<170?(v-85)*3:255;
+        d[i+1]=v<85?v*3:v<170?255:255-(v-170)*2;
+        d[i+2]=v<85?255-v*2:v<170?80:0;
+      }
+
+      else if(mode==="astro"){
+        let v=Math.min(255,lum*gain*2.4);
+        if(v>115){
+          d[i]=Math.min(255,v*1.25);
+          d[i+1]=Math.min(255,v*1.25);
+          d[i+2]=255;
+        }else{
+          d[i]=v*0.15;
+          d[i+1]=v*0.25;
+          d[i+2]=v*0.55;
+        }
+      }
+
+      else{
+        d[i]=Math.min(255,r*gain);
+        d[i+1]=Math.min(255,g*gain);
+        d[i+2]=Math.min(255,b*gain);
+      }
+    }
+
+    ctx.putImageData(img,0,0);
+  }
+  requestAnimationFrame(draw);
+}
+
+function takePhoto(){
+  const a=document.createElement("a");
+  a.download="ultra-gok-bilimci-paneli.png";
+  a.href=canvas.toDataURL("image/png");
+  a.click();
+}
+
+function getLocation(){
+  if(!navigator.geolocation)return;
+  navigator.geolocation.getCurrentPosition(pos=>{
+    const lat=pos.coords.latitude.toFixed(3);
+    const lon=pos.coords.longitude.toFixed(3);
+    document.getElementById("loc").textContent=lat+", "+lon;
+  },()=>{document.getElementById("loc").textContent="Kapalı"});
+}
+
+function initCompass(){
+  if(typeof DeviceOrientationEvent!=="undefined" &&
+     typeof DeviceOrientationEvent.requestPermission==="function"){
+    DeviceOrientationEvent.requestPermission().then(res=>{
+      if(res==="granted"){
+        window.addEventListener("deviceorientation",handleOrientation);
+      }
+    });
+  }else{
+    window.addEventListener("deviceorientation",handleOrientation);
+  }
+}
+
+function handleOrientation(e){
+  let heading=e.webkitCompassHeading || (360-e.alpha);
+  if(heading){
+    document.getElementById("compass").textContent=Math.round(heading)+"°";
+  }
+}
+
+startCamera();
+</script>
+</body>
+</html>
