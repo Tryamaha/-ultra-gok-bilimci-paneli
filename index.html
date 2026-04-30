@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
-<title>UltraTelescope AI PRO V4</title>
+<title>UltraTelescope Offline AI PRO V5</title>
 
 <script src="https://cdn.jsdelivr.net/npm/astronomy-engine@2.1.19/astronomy.browser.min.js"></script>
 
@@ -26,20 +26,20 @@ html,body{
   background:radial-gradient(circle at top,#102b5f,#02050d 66%);
 }
 header{
-  padding:10px;
+  padding:9px 8px;
   text-align:center;
-  background:rgba(0,0,0,.78);
+  background:rgba(0,0,0,.80);
   backdrop-filter:blur(18px);
   border-bottom:1px solid rgba(120,220,255,.28);
-  z-index:40;
+  z-index:50;
 }
 h1{
-  font-size:18px;
+  font-size:17px;
   margin:0;
   color:#dffaff;
 }
 header p{
-  font-size:11px;
+  font-size:10.5px;
   margin:3px 0 0;
   color:#7fe7ff;
 }
@@ -58,53 +58,53 @@ video,canvas{
 }
 #hud{
   position:absolute;
-  top:10px;
-  left:10px;
-  right:10px;
+  top:9px;
+  left:9px;
+  right:9px;
   display:grid;
   grid-template-columns:1fr 1fr;
   gap:7px;
   z-index:10;
 }
 .card{
-  background:rgba(0,0,0,.56);
+  background:rgba(0,0,0,.57);
   border:1px solid rgba(120,220,255,.30);
-  border-radius:15px;
-  padding:8px;
-  font-size:11px;
+  border-radius:14px;
+  padding:7px;
+  font-size:10.5px;
   backdrop-filter:blur(14px);
 }
 .big{
-  font-size:17px;
+  font-size:16px;
   font-weight:900;
   color:#69f3ff;
 }
 #targetPanel{
   position:absolute;
-  left:10px;
-  right:10px;
-  bottom:260px;
+  left:9px;
+  right:9px;
+  bottom:315px;
   z-index:20;
   background:rgba(0,0,0,.70);
   border:1px solid rgba(120,220,255,.38);
-  border-radius:20px;
-  padding:10px;
+  border-radius:18px;
+  padding:9px;
   backdrop-filter:blur(18px);
 }
 #grid{
   display:grid;
   grid-template-columns:repeat(4,1fr);
-  gap:6px;
-  margin-top:8px;
+  gap:5px;
+  margin-top:7px;
 }
 button{
   border:0;
-  border-radius:13px;
-  padding:9px 5px;
+  border-radius:12px;
+  padding:8px 4px;
   background:#08233f;
   color:white;
   font-weight:800;
-  font-size:12px;
+  font-size:11px;
 }
 button.active{
   background:#0aa3ff;
@@ -113,49 +113,69 @@ button:active{
   transform:scale(.98);
 }
 #result{
-  margin-top:9px;
-  background:rgba(255,255,255,.065);
-  border-radius:14px;
-  padding:9px;
-  font-size:12px;
-  line-height:1.55;
-}
-#aiPanel{
-  position:absolute;
-  left:10px;
-  right:10px;
-  bottom:118px;
-  z-index:25;
-  background:rgba(0,0,0,.74);
-  border:1px solid rgba(86,234,255,.48);
-  border-radius:20px;
-  padding:10px;
-  backdrop-filter:blur(18px);
-}
-#aiResult{
   margin-top:8px;
-  background:rgba(255,255,255,.07);
-  border-radius:14px;
-  padding:9px;
-  font-size:12px;
+  background:rgba(255,255,255,.065);
+  border-radius:13px;
+  padding:8px;
+  font-size:11.5px;
   line-height:1.45;
   max-height:105px;
   overflow:auto;
 }
-#controls{
-  background:rgba(0,0,0,.86);
+#offlineAiPanel{
+  position:absolute;
+  left:9px;
+  right:9px;
+  bottom:138px;
+  z-index:25;
+  background:rgba(0,0,0,.76);
+  border:1px solid rgba(86,234,255,.50);
+  border-radius:18px;
+  padding:9px;
+  backdrop-filter:blur(18px);
+}
+#aiResult{
+  margin-top:7px;
+  background:rgba(255,255,255,.075);
+  border-radius:13px;
   padding:8px;
+  font-size:11.5px;
+  line-height:1.42;
+  max-height:125px;
+  overflow:auto;
+}
+#aiMeters{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:5px;
+  margin-top:7px;
+}
+.meter{
+  background:rgba(255,255,255,.07);
+  border-radius:12px;
+  padding:6px;
+  font-size:10px;
+  text-align:center;
+}
+.meter b{
+  display:block;
+  color:#7df3ff;
+  font-size:13px;
+}
+#controls{
+  background:rgba(0,0,0,.88);
+  padding:7px 8px;
   border-top:1px solid rgba(120,220,255,.25);
-  z-index:50;
+  z-index:60;
   backdrop-filter:blur(20px);
 }
 .row{
   display:flex;
-  gap:6px;
-  margin-bottom:7px;
+  gap:5px;
+  margin-bottom:6px;
 }
 label{
-  font-size:11px;
+  font-size:10.5px;
   color:#bcefff;
 }
 input[type=range]{
@@ -165,9 +185,18 @@ input[type=range]{
 .bad{color:#ff7777}
 .warn{color:#ffd36a}
 .note{
-  font-size:10px;
+  font-size:9.7px;
   text-align:center;
   color:#ffd27a;
+}
+.badge{
+  display:inline-block;
+  padding:2px 7px;
+  border-radius:99px;
+  background:rgba(0,170,255,.18);
+  border:1px solid rgba(120,220,255,.35);
+  color:#9af3ff;
+  font-size:10px;
 }
 </style>
 </head>
@@ -176,8 +205,8 @@ input[type=range]{
 <div id="app">
 
 <header>
-  <h1>🔭 UltraTelescope AI PRO V4</h1>
-  <p>Gerçek GPS • Ay/Gezegen Bulucu • Gece Görüş • ChatGPT Astro AI</p>
+  <h1>🔭 UltraTelescope OFFLINE AI PRO V5</h1>
+  <p>Gerçek GPS • Ay/Gezegen Bulucu • Gece Görüş • Offline Astro AI</p>
 </header>
 
 <div id="viewer">
@@ -192,7 +221,9 @@ input[type=range]{
   </div>
 
   <div id="targetPanel">
-    <div style="font-weight:900;color:#7df3ff">🌌 Gerçek Hedef Bulucu</div>
+    <div style="font-weight:900;color:#7df3ff">
+      🌌 Gerçek Hedef Bulucu <span class="badge">GPS + Saat</span>
+    </div>
 
     <div id="grid">
       <button onclick="selectTarget('Moon')">🌙 Ay</button>
@@ -210,15 +241,26 @@ input[type=range]{
     </div>
   </div>
 
-  <div id="aiPanel">
-    <b style="color:#7df3ff">🤖 ChatGPT Astro AI</b>
-    <div class="row" style="margin-top:8px">
-      <button onclick="saveOpenAIKey()">🔑 API Key</button>
-      <button onclick="analyzeAstroImage()">🔍 AI Analiz</button>
-      <button onclick="clearAIKey()">🧹 Sil</button>
+  <div id="offlineAiPanel">
+    <div style="font-weight:900;color:#7df3ff">
+      🧠 Offline Astro AI Motoru <span class="badge">API yok</span>
     </div>
+
+    <div class="row" style="margin-top:7px">
+      <button onclick="runOfflineAI()">🔍 AI Analiz</button>
+      <button onclick="toggleAutoAI()">⚡ Canlı AI</button>
+      <button onclick="autoTune()">🎚️ Auto Ayar</button>
+    </div>
+
+    <div id="aiMeters">
+      <div class="meter">Netlik<b id="mSharp">--</b></div>
+      <div class="meter">Parlaklık<b id="mBright">--</b></div>
+      <div class="meter">Merkez<b id="mCenter">--</b></div>
+      <div class="meter">Tespit<b id="mDetect">--</b></div>
+    </div>
+
     <div id="aiResult">
-      Kamera açıkken hedefe bak ve AI Analiz’e bas. API key kod içine yazılmaz; cihazda geçici saklanır.
+      Kamera açıkken hedefe bak ve AI Analiz’e bas. Görüntü dışarı gönderilmez.
     </div>
   </div>
   </div>
@@ -269,6 +311,9 @@ let lon = null;
 let alt = 0;
 let heading = null;
 let selectedTarget = null;
+
+let autoAI = false;
+let lastAIResult = null;
 
 const stars = {
   Sirius: { name:"Sirius", ra:6.7525, dec:-16.7161 },
@@ -346,15 +391,15 @@ function draw(){
       let lum = (r + g + b) / 3;
 
       if(mode === "night"){
-        let v = Math.min(255, lum * gain * 2.4);
+        let v = Math.min(255, lum * gain * 2.45);
         d[i] = v * 0.12;
-        d[i+1] = Math.min(255, v * 1.55);
-        d[i+2] = v * 0.25;
+        d[i+1] = Math.min(255, v * 1.58);
+        d[i+2] = v * 0.24;
       }
 
       else if(mode === "moon"){
-        let v = Math.min(255, (lum - 18) * gain * 2.1);
-        let c = (v - 128) * 1.35 + 128;
+        let v = Math.min(255, (lum - 18) * gain * 2.15);
+        let c = (v - 128) * 1.38 + 128;
         c = Math.max(0, Math.min(255, c));
         d[i] = c;
         d[i+1] = c;
@@ -362,7 +407,7 @@ function draw(){
       }
 
       else if(mode === "astro"){
-        let v = Math.min(255, lum * gain * 3.2);
+        let v = Math.min(255, lum * gain * 3.25);
         if(v > 100){
           d[i] = 255;
           d[i+1] = 255;
@@ -393,13 +438,12 @@ function draw(){
     if(sharp > 0) sharpenCanvas(sharp);
 
     drawReticle();
-    detectBrightPoints();
+    detectBrightPointsOverlay();
   }
 
   requestAnimationFrame(draw);
 }
-
-function sharpenCanvas(amount){
+  function sharpenCanvas(amount){
   const w = canvas.width;
   const h = canvas.height;
 
@@ -452,11 +496,14 @@ function drawReticle(){
   ctx.restore();
 }
 
-function detectBrightPoints(){
+function detectBrightPointsOverlay(){
   if(mode !== "astro") return;
 
   const w = canvas.width;
   const h = canvas.height;
+
+  if(!w || !h) return;
+
   const img = ctx.getImageData(0, 0, w, h).data;
 
   ctx.save();
@@ -481,7 +528,8 @@ function detectBrightPoints(){
 
   ctx.restore();
 }
-  function getLocation(){
+
+function getLocation(){
   if(!navigator.geolocation){
     alert("GPS desteklenmiyor.");
     return;
@@ -638,108 +686,157 @@ function guideText(diff, head, az){
 
 function takePhoto(){
   const a = document.createElement("a");
-  a.download = "UltraTelescope-AI-PRO-V4.png";
+  a.download = "UltraTelescope-OFFLINE-AI-PRO-V5.png";
   a.href = canvas.toDataURL("image/png");
   a.click();
 }
+  function sampleFrameStats(){
+  const w = canvas.width;
+  const h = canvas.height;
 
-function saveOpenAIKey(){
-  const key = prompt("OpenAI API key gir. Kod içine kaydedilmez, sadece bu cihazda saklanır:");
+  if(!w || !h) return null;
 
-  if(key){
-    localStorage.setItem("OPENAI_API_KEY", key.trim());
-    alert("API key bu cihazda kaydedildi.");
+  const img = ctx.getImageData(0,0,w,h).data;
+
+  let bright = 0;
+  let brightCount = 0;
+  let centerScore = 0;
+  let edgeContrast = 0;
+  let total = 0;
+
+  for(let y=20; y<h-20; y+=12){
+    for(let x=20; x<w-20; x+=12){
+      let i = (y*w + x) * 4;
+      let lum = (img[i]+img[i+1]+img[i+2])/3;
+
+      bright += lum;
+      total++;
+
+      if(lum > 210) brightCount++;
+
+      if(
+        x > w*0.35 && x < w*0.65 &&
+        y > h*0.35 && y < h*0.65 &&
+        lum > 180
+      ){
+        centerScore++;
+      }
+
+      let i2 = ((y+1)*w + (x+1)) * 4;
+      let lum2 = (img[i2]+img[i2+1]+img[i2+2])/3;
+      edgeContrast += Math.abs(lum - lum2);
+    }
   }
+
+  return {
+    avgBrightness: bright / total,
+    brightPoints: brightCount,
+    centerScore: centerScore,
+    sharpness: edgeContrast / total
+  };
 }
 
-function clearAIKey(){
-  localStorage.removeItem("OPENAI_API_KEY");
-  alert("API key silindi.");
-}
+function runOfflineAI(){
+  const stats = sampleFrameStats();
 
-async function analyzeAstroImage(){
-  const key = localStorage.getItem("OPENAI_API_KEY");
-
-  if(!key){
-    alert("Önce API key gir.");
+  if(!stats){
+    document.getElementById("aiResult").innerHTML = "Kamera verisi bekleniyor.";
     return;
   }
 
-  const aiBox = document.getElementById("aiResult");
-  aiBox.innerHTML = "🤖 ChatGPT görüntüyü analiz ediyor...";
+  let detect = "Belirsiz";
+  let comment = [];
+  let score = 0;
 
-  try{
-    const small = document.createElement("canvas");
-    small.width = 512;
-    small.height = 512;
-
-    const sctx = small.getContext("2d");
-    sctx.drawImage(canvas, 0, 0, 512, 512);
-
-    const imageBase64 = small.toDataURL("image/jpeg", 0.75);
-
-    const promptText = `
-Sen profesyonel bir astronomi gözlem asistanısın.
-Bu iPhone kamera görüntüsünü analiz et.
-
-Kısa ve net cevap ver:
-1. Görüntüde Ay, yıldız, gezegen, ışık kirliliği, lens parlaması veya kamera gürültüsü var mı?
-2. Bu görüntü astronomik gözlem için uygun mu?
-3. Hangi modu önerirsin: Normal, Gece, Ay, Astro veya Termal?
-4. Zoom, ışık kazancı ve keskinlik için öneri ver.
-5. Seçili hedefe göre kullanıcı telefonu hangi yöne çevirmeli?
-
-Mevcut veriler:
-Konum: ${lat || "bilinmiyor"}, ${lon || "bilinmiyor"}
-Seçili hedef: ${selectedTarget || "yok"}
-Pusula: ${heading || "bilinmiyor"}
-Kamera modu: ${mode}
-Zoom: ${zoom}
-Işık kazancı: ${gain}
-Keskinlik: ${sharp}
-`;
-
-    const res = await fetch("https://api.openai.com/v1/responses", {
-      method: "POST",
-      headers: {
-        "Authorization": "Bearer " + key,
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        model: "gpt-5.1",
-        input: [
-          {
-            role: "user",
-            content: [
-              { type: "input_text", text: promptText },
-              { type: "input_image", image_url: imageBase64 }
-            ]
-          }
-        ]
-      })
-    });
-
-    const data = await res.json();
-
-    if(data.error){
-      aiBox.innerHTML = "❌ API hata: " + data.error.message;
-      return;
-    }
-
-    const text =
-      data.output_text ||
-      data.output?.[0]?.content?.[0]?.text ||
-      data.output?.[0]?.content?.[1]?.text ||
-      "Cevap alınamadı.";
-
-    aiBox.innerHTML = text.replace(/\n/g, "<br>");
-
-  }catch(e){
-    aiBox.innerHTML = "❌ Bağlantı/analiz hatası: " + e.message;
+  if(stats.avgBrightness > 150 && stats.centerScore > 15){
+    detect = "Ay benzeri parlak disk";
+    score += 30;
+    comment.push("Büyük parlak merkez tespit edildi.");
   }
+
+  if(stats.brightPoints > 10 && mode === "astro"){
+    detect = "Yıldız/Gezegen parlak noktaları";
+    score += 25;
+    comment.push("Çoklu parlak nokta algılandı.");
+  }
+
+  if(stats.sharpness > 18){
+    score += 20;
+    comment.push("Görüntü keskinliği iyi.");
+  }else{
+    comment.push("Görüntü yumuşak; keskinlik artırılabilir.");
+  }
+
+  if(stats.centerScore > 8){
+    score += 15;
+    comment.push("Hedef merkeze yakın.");
+  }else{
+    comment.push("Hedef tam merkezde değil.");
+  }
+
+  if(selectedTarget === "Moon" && detect.includes("Ay")){
+    score += 20;
+    comment.push("Seçili hedef ile görüntü uyumlu.");
+  }
+
+  document.getElementById("mSharp").textContent = Math.round(stats.sharpness);
+  document.getElementById("mBright").textContent = Math.round(stats.avgBrightness);
+  document.getElementById("mCenter").textContent = stats.centerScore;
+  document.getElementById("mDetect").textContent = detect;
+
+  let advice = [];
+
+  if(stats.avgBrightness < 70) advice.push("Işık kazancını artır.");
+  if(stats.avgBrightness > 190) advice.push("Kazancı azalt.");
+  if(stats.sharpness < 12) advice.push("Keskinliği yükselt.");
+  if(stats.centerScore < 6) advice.push("Telefonu merkeze hizala.");
+  if(mode !== "moon" && detect.includes("Ay")) advice.push("Ay moduna geç.");
+  if(mode !== "astro" && detect.includes("Yıldız")) advice.push("Astro moduna geç.");
+  if(zoom < 8 && detect !== "Belirsiz") advice.push("Zoom artır.");
+
+  lastAIResult = {
+    score,
+    detect,
+    advice
+  };
+
+  document.getElementById("aiResult").innerHTML =
+    "AI Tespit: <b>" + detect + "</b><br>" +
+    "Gözlem Skoru: <b>" + score + "/100</b><br>" +
+    comment.join(" ") + "<br><br>" +
+    "Öneri: <b>" + (advice.length ? advice.join(" | ") : "Ayarlar iyi görünüyor.") + "</b>";
 }
 
-setInterval(updateTarget, 1500);
+function toggleAutoAI(){
+  autoAI = !autoAI;
+  alert(autoAI ? "Canlı AI aktif." : "Canlı AI kapalı.");
+}
+
+function autoTune(){
+  const stats = sampleFrameStats();
+  if(!stats) return;
+
+  if(stats.avgBrightness < 80) gain = Math.min(7, gain + 0.4);
+  if(stats.avgBrightness > 185) gain = Math.max(1, gain - 0.4);
+
+  if(stats.sharpness < 11) sharp = Math.min(2.5, sharp + 0.2);
+
+  if(stats.centerScore > 10 && zoom < 14) zoom += 0.5;
+
+  document.getElementById("gain").value = gain;
+  document.getElementById("sharp").value = sharp;
+  document.getElementById("zoom").value = zoom;
+  document.getElementById("zoomText").textContent = zoom.toFixed(1) + "x";
+
+  runOfflineAI();
+}
+
+setInterval(updateTarget,1500);
+
+setInterval(()=>{
+  if(autoAI) runOfflineAI();
+},2500);
+
 startCamera();
 </script>
 </body>
