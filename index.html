@@ -3,154 +3,82 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
-<title>UltraTelescope V8</title>
-
+<title>UltraTelescope V9 SIGINT</title>
 <script src="https://cdn.jsdelivr.net/npm/astronomy-engine@2.1.19/astronomy.browser.min.js"></script>
 
 <style>
 *{box-sizing:border-box}
 html,body{
-  margin:0;width:100%;height:100%;overflow:hidden;
-  background:#000;color:white;
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-}
-#app{position:relative;width:100vw;height:100vh;background:#000;overflow:hidden}
-video,canvas{
-  position:absolute;inset:0;width:100%;height:100%;
-  object-fit:cover;background:#000;
-}
+margin:0;width:100%;height:100%;overflow:hidden;background:#000;color:#fff;
+font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+#app{position:relative;width:100vw;height:100vh;overflow:hidden;background:#000}
+video,canvas{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:#000}
+
 #topHud{
-  position:absolute;top:env(safe-area-inset-top);left:0;right:0;
-  z-index:40;padding:8px 10px 5px;
-  background:linear-gradient(to bottom,rgba(0,0,0,.75),rgba(0,0,0,0));
-}
-#title{
-  text-align:center;font-weight:900;font-size:17px;color:#dffaff;
-  text-shadow:0 0 12px #00eaff;
-}
+position:absolute;top:env(safe-area-inset-top);left:0;right:0;z-index:50;
+padding:8px 10px 5px;background:linear-gradient(to bottom,rgba(0,0,0,.8),rgba(0,0,0,0))}
+#title{text-align:center;font-weight:900;font-size:17px;color:#dffaff;text-shadow:0 0 12px #00eaff}
 #sub{text-align:center;font-size:10px;color:#78f3ff;margin-top:1px}
 .topBtn{
-  position:absolute;top:8px;width:42px;height:42px;border-radius:14px;
-  border:1px solid rgba(120,240,255,.35);
-  background:rgba(0,0,0,.45);color:white;font-size:22px;
-  backdrop-filter:blur(16px);
-}
-#backBtn{left:10px}
-#menuBtn{right:10px}
+position:absolute;top:8px;width:42px;height:42px;border-radius:14px;
+border:1px solid rgba(120,240,255,.35);background:rgba(0,0,0,.45);color:#fff;font-size:22px}
+#backBtn{left:10px} #menuBtn{right:10px}
 
 #miniStrip{
-  position:absolute;top:74px;left:10px;right:10px;z-index:35;
-  display:grid;grid-template-columns:repeat(5,1fr);
-  background:rgba(0,0,0,.38);
-  border:1px solid rgba(120,240,255,.25);
-  border-radius:16px;overflow:hidden;backdrop-filter:blur(18px);
-}
-.mini{
-  text-align:center;padding:7px 2px;font-size:9.5px;
-  border-right:1px solid rgba(255,255,255,.12);
-}
+position:absolute;top:74px;left:10px;right:10px;z-index:45;
+display:grid;grid-template-columns:repeat(6,1fr);
+background:rgba(0,0,0,.38);border:1px solid rgba(120,240,255,.25);
+border-radius:16px;overflow:hidden}
+.mini{text-align:center;padding:7px 2px;font-size:9px;border-right:1px solid rgba(255,255,255,.12)}
 .mini:last-child{border-right:0}
-.mini b{display:block;color:#73f8ff;font-size:13px;margin-top:2px}
+.mini b{display:block;color:#73f8ff;font-size:12px;margin-top:2px}
 
-#drawer{
-  position:absolute;top:0;bottom:0;left:-270px;width:270px;z-index:80;
-  background:rgba(5,12,20,.90);
-  border-right:1px solid rgba(120,240,255,.25);
-  backdrop-filter:blur(26px);
-  transition:.25s ease;padding:72px 14px 18px;
-}
-#drawer.open{left:0}
-#drawerClose{
-  position:absolute;top:38px;right:15px;background:transparent;
-  color:white;border:0;font-size:28px;
-}
-.drawerItem{
-  display:flex;align-items:center;gap:12px;
-  padding:12px;margin-bottom:8px;border-radius:16px;
-  background:rgba(255,255,255,.055);font-weight:800;
-}
-.drawerIcon{
-  width:42px;height:42px;border-radius:50%;
-  display:grid;place-items:center;font-size:22px;
-  background:rgba(255,255,255,.11);
-}
+#alarmBox{
+position:absolute;top:145px;left:10px;z-index:46;
+width:135px;padding:10px;border-radius:16px;
+background:rgba(20,0,0,.45);border:1px solid rgba(255,80,80,.45);
+font-size:11px}
+#alarmState{font-weight:900;color:#ff5f5f}
+#alarmBar{height:6px;background:#2a1111;border-radius:99px;margin:7px 0;overflow:hidden}
+#alarmFill{height:100%;width:0;background:#ff3333}
 
 #rightRail{
-  position:absolute;right:10px;top:155px;z-index:38;
-  display:flex;flex-direction:column;gap:9px;
-}
+position:absolute;right:10px;top:145px;z-index:48;
+display:flex;flex-direction:column;gap:9px}
 .railBtn{
-  width:58px;height:58px;border-radius:18px;
-  border:1px solid rgba(120,240,255,.32);
-  background:rgba(0,0,0,.42);color:white;
-  font-size:22px;backdrop-filter:blur(16px);
-}
+width:58px;height:58px;border-radius:18px;
+border:1px solid rgba(120,240,255,.32);
+background:rgba(0,0,0,.42);color:#fff;font-size:22px}
 .railBtn span{display:block;font-size:8px;font-weight:900;margin-top:2px}
 
-#lockMini{
-  position:absolute;left:10px;top:155px;z-index:36;
-  width:116px;padding:10px;border-radius:16px;
-  background:rgba(0,0,0,.38);
-  border:1px solid rgba(80,255,130,.45);
-  backdrop-filter:blur(18px);font-size:11px;
-}
-#lockMini b{color:#55ff88}
-#lockBar{height:6px;background:#15251c;border-radius:99px;margin:7px 0;overflow:hidden}
-#lockFill{height:100%;width:0;background:#55ff88}
-
 #bottomBar{
-  position:absolute;left:50%;bottom:calc(env(safe-area-inset-bottom) + 18px);
-  transform:translateX(-50%);z-index:45;
-  display:flex;align-items:center;gap:15px;
-  background:rgba(0,0,0,.45);
-  border:1px solid rgba(120,240,255,.25);
-  border-radius:38px;padding:10px 16px;backdrop-filter:blur(18px);
-}
-.modeBtn{
-  border:0;border-radius:20px;padding:10px 14px;
-  background:transparent;color:white;font-weight:900;
-}
+position:absolute;left:50%;bottom:calc(env(safe-area-inset-bottom) + 18px);
+transform:translateX(-50%);z-index:55;display:flex;align-items:center;gap:15px;
+background:rgba(0,0,0,.45);border:1px solid rgba(120,240,255,.25);
+border-radius:38px;padding:10px 16px}
+.modeBtn{border:0;border-radius:20px;padding:10px 14px;background:transparent;color:#fff;font-weight:900}
 .modeBtn.active{background:rgba(90,220,255,.30)}
-#shutter{
-  width:72px;height:72px;border-radius:50%;
-  border:6px solid white;background:white;
-  box-shadow:0 0 0 4px rgba(255,255,255,.25);
-}
+#shutter{width:72px;height:72px;border-radius:50%;border:6px solid #fff;background:#fff}
 
 #sheet{
-  position:absolute;left:0;right:0;bottom:-470px;height:500px;z-index:75;
-  background:rgba(7,14,22,.93);
-  border-top:1px solid rgba(120,240,255,.35);
-  border-radius:26px 26px 0 0;
-  backdrop-filter:blur(26px);
-  padding:28px 18px 22px;transition:.25s ease;overflow:auto;
-}
+position:absolute;left:0;right:0;bottom:-500px;height:530px;z-index:80;
+background:rgba(7,14,22,.94);border-top:1px solid rgba(120,240,255,.35);
+border-radius:26px 26px 0 0;padding:28px 18px 22px;transition:.25s ease;overflow:auto}
 #sheet.open{bottom:0}
 #handle{
-  position:absolute;top:-22px;left:50%;transform:translateX(-50%);
-  width:80px;height:42px;border-radius:28px 28px 0 0;
-  background:rgba(7,14,22,.93);
-  border:1px solid rgba(120,240,255,.35);border-bottom:0;
-  display:grid;place-items:center;color:#85f8ff;font-size:24px;font-weight:900;
-}
-h3{margin:8px 0 10px;color:#7df3ff;font-size:13px;letter-spacing:.5px}
+position:absolute;top:-22px;left:50%;transform:translateX(-50%);
+width:80px;height:42px;border-radius:28px 28px 0 0;
+background:rgba(7,14,22,.94);border:1px solid rgba(120,240,255,.35);border-bottom:0;
+display:grid;place-items:center;color:#85f8ff;font-size:24px;font-weight:900}
+h3{margin:8px 0 10px;color:#7df3ff;font-size:13px}
 .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
-.grid button,.panelBtn{
-  border:1px solid rgba(255,255,255,.13);
-  background:rgba(255,255,255,.075);
-  color:white;border-radius:14px;padding:12px 6px;font-weight:900;
-}
+.grid button{
+border:1px solid rgba(255,255,255,.13);background:rgba(255,255,255,.075);
+color:#fff;border-radius:14px;padding:12px 6px;font-weight:900}
 .control{
-  display:grid;grid-template-columns:110px 1fr 44px;gap:10px;align-items:center;
-  padding:10px;background:rgba(255,255,255,.055);
-  border-radius:14px;margin-bottom:8px;
-}
-.control b{text-align:right}
-#aiBox,#audioBox,#gpsBox{
-  margin-top:10px;padding:10px;border-radius:14px;
-  background:rgba(255,255,255,.07);
-  font-size:12px;line-height:1.45;
-}
+display:grid;grid-template-columns:110px 1fr 44px;gap:10px;align-items:center;
+padding:10px;background:rgba(255,255,255,.055);border-radius:14px;margin-bottom:8px}
+#aiBox,#sigintBox,#gpsBox{margin-top:10px;padding:10px;border-radius:14px;background:rgba(255,255,255,.07);font-size:12px;line-height:1.45}
 </style>
 </head>
 <body>
@@ -159,42 +87,32 @@ h3{margin:8px 0 10px;color:#7df3ff;font-size:13px;letter-spacing:.5px}
 <canvas id="canvas"></canvas>
 
 <div id="topHud">
-  <button id="backBtn" class="topBtn" onclick="history.back()">‹</button>
-  <button id="menuBtn" class="topBtn" onclick="toggleDrawer()">☰</button>
-  <div id="title">🔭 UltraTelescope V8</div>
-  <div id="sub">Full Camera • Gizli Paneller • GPS • Uydu • Ses/Frekans AI</div>
+<button id="backBtn" class="topBtn" onclick="history.back()">‹</button>
+<button id="menuBtn" class="topBtn" onclick="toggleSheet()">☰</button>
+<div id="title">🔭 UltraTelescope V9 SIGINT</div>
+<div id="sub">Astro Optik + Akustik Sinyal İstihbarat Motoru</div>
 </div>
 
 <div id="miniStrip">
-  <div class="mini">Mod<b id="iMode">Astro</b></div>
-  <div class="mini">Zoom<b id="iZoom">1.0x</b></div>
-  <div class="mini">GPS<b id="iGps">--</b></div>
-  <div class="mini">Pusula<b id="iCompass">--°</b></div>
-  <div class="mini">Hedef<b id="iTarget">Ay</b></div>
+<div class="mini">Mod<b id="iMode">Astro</b></div>
+<div class="mini">Zoom<b id="iZoom">1.0x</b></div>
+<div class="mini">GPS<b id="iGps">--</b></div>
+<div class="mini">Pusula<b id="iCompass">--°</b></div>
+<div class="mini">Hedef<b id="iTarget">Ay</b></div>
+<div class="mini">dB<b id="iDb">0</b></div>
 </div>
 
-<div id="drawer">
-  <button id="drawerClose" onclick="toggleDrawer()">×</button>
-  <div class="drawerItem" onclick="openSheet('targets')"><div class="drawerIcon">🪐</div>Hedefler</div>
-  <div class="drawerItem" onclick="openSheet('gps')"><div class="drawerIcon">📍</div>GPS / Uydu</div>
-  <div class="drawerItem" onclick="openSheet('audio')"><div class="drawerIcon">🎙️</div>Ses / Frekans</div>
-  <div class="drawerItem" onclick="openSheet('galaxy')"><div class="drawerIcon">🌌</div>Galaksi Ses Tanıma</div>
-  <div class="drawerItem" onclick="openSheet('settings')"><div class="drawerIcon">⚙️</div>Ayarlar</div>
-  <div class="drawerItem" onclick="takePhoto()"><div class="drawerIcon">📷</div>Foto Çek</div>
-  <div class="drawerItem" onclick="toggleRecord()"><div class="drawerIcon">🔴</div>Video Kaydı</div>
+<div id="alarmBox">
+<div>🚨 SIGINT: <span id="alarmState">PASİF</span></div>
+<div id="alarmBar"><div id="alarmFill"></div></div>
+<div>Tür: <b id="sigType">--</b></div>
+<div>Risk: <b id="sigRisk">0%</b></div>
 </div>
 <div id="rightRail">
   <button class="railBtn" onclick="toggleTrackingLock()">🎯<span>LOCK</span></button>
-  <button class="railBtn" onclick="openSheet('gps')">🛰️<span>UYDU</span></button>
-  <button class="railBtn" onclick="openSheet('audio')">🎙️<span>SES</span></button>
+  <button class="railBtn" onclick="openTab('gps')">🛰️<span>UYDU</span></button>
+  <button class="railBtn" onclick="openTab('sigint')">🛡️<span>SIGINT</span></button>
   <button class="railBtn" onclick="takePhoto()">📷<span>FOTO</span></button>
-</div>
-
-<div id="lockMini">
-  <div>🎯 Lock: <b id="lockState">PASİF</b></div>
-  <div id="lockBar"><div id="lockFill"></div></div>
-  <div>Güven: <b id="lockConf">0%</b></div>
-  <div>X:<b id="lockX">--</b> Y:<b id="lockY">--</b></div>
 </div>
 
 <div id="bottomBar">
@@ -207,67 +125,83 @@ h3{margin:8px 0 10px;color:#7df3ff;font-size:13px;letter-spacing:.5px}
 <div id="sheet">
   <div id="handle" onclick="toggleSheet()">⌃</div>
 
-  <div id="sheetTargets">
-    <h3>HEDEF SEÇ</h3>
+  <div id="tabTargets">
+    <h3>HEDEF / KAMERA</h3>
     <div class="grid">
       <button onclick="selectTarget('Moon')">🌙 Ay</button>
       <button onclick="selectTarget('Sun')">☀️ Güneş</button>
-      <button onclick="selectTarget('Venus')">♀ Venüs</button>
-      <button onclick="selectTarget('Mars')">♂ Mars</button>
-      <button onclick="selectTarget('Jupiter')">♃ Jüpiter</button>
-      <button onclick="selectTarget('Saturn')">♄ Satürn</button>
-      <button onclick="selectTarget('Sirius')">✦ Sirius</button>
-      <button onclick="selectTarget('Vega')">★ Vega</button>
+      <button onclick="selectTarget('Venus')">Venüs</button>
+      <button onclick="selectTarget('Mars')">Mars</button>
+      <button onclick="selectTarget('Jupiter')">Jüpiter</button>
+      <button onclick="selectTarget('Saturn')">Satürn</button>
+      <button onclick="selectTarget('Sirius')">Sirius</button>
+      <button onclick="selectTarget('Vega')">Vega</button>
     </div>
 
-    <h3>KAMERA AYARLARI</h3>
-    <div class="control"><span>Zoom</span><input id="zoom" type="range" min="1" max="20" step="0.1" value="1"><b id="zVal">1.0x</b></div>
-    <div class="control"><span>Işık/Kazanç</span><input id="gain" type="range" min="1" max="7" step="0.1" value="1.6"><b id="gVal">1.6</b></div>
-    <div class="control"><span>Keskinlik</span><input id="sharp" type="range" min="0" max="2.5" step="0.1" value="1"><b id="sVal">1.0</b></div>
-
-    <h3>YAPAY ZEKA</h3>
+    <h3>FİLTRELER</h3>
     <div class="grid">
-      <button class="panelBtn" onclick="runOfflineAI()">🧠 AI Analiz</button>
-      <button class="panelBtn" onclick="autoTune()">🎚️ Auto Tune</button>
-      <button class="panelBtn" onclick="toggleTrackingLock()">🎯 Lock</button>
-      <button class="panelBtn" onclick="setMode('astro')">🌌 Astro</button>
+      <button onclick="setMode('normal')">Normal</button>
+      <button onclick="setMode('night')">Gece</button>
+      <button onclick="setMode('moon')">Ay</button>
+      <button onclick="setMode('astro')">Astro</button>
     </div>
-    <div id="aiBox">AI hazır.</div>
+
+    <h3>AYARLAR</h3>
+    <div class="control">
+      <span>Zoom</span>
+      <input id="zoom" type="range" min="1" max="20" step="0.1" value="1">
+      <b id="zVal">1.0x</b>
+    </div>
+    <div class="control">
+      <span>Kazanç</span>
+      <input id="gain" type="range" min="1" max="7" step="0.1" value="1.6">
+      <b id="gVal">1.6</b>
+    </div>
+    <div class="control">
+      <span>Keskinlik</span>
+      <input id="sharp" type="range" min="0" max="2.5" step="0.1" value="1">
+      <b id="sVal">1.0</b>
+    </div>
+
+    <div class="grid">
+      <button onclick="runOfflineAI()">🧠 AI Analiz</button>
+      <button onclick="autoTune()">🎚️ Auto Tune</button>
+      <button onclick="toggleTrackingLock()">🎯 Lock</button>
+      <button onclick="takePhoto()">📷 Foto</button>
+    </div>
+    <div id="aiBox">Astro AI hazır.</div>
   </div>
 
-  <div id="sheetGps" style="display:none">
-    <h3>GPS / UYDU TAKİP</h3>
+  <div id="tabGps" style="display:none">
+    <h3>GPS / UYDU PANELİ</h3>
     <div class="grid">
       <button onclick="getLocation()">📍 GPS Yenile</button>
-      <button onclick="selectTarget('Sun')">☀️ Güneş Yolu</button>
-      <button onclick="selectTarget('Moon')">🌙 Ay Yolu</button>
-      <button onclick="runSatelliteSim()">🛰️ Uydu Sim</button>
+      <button onclick="selectTarget('Moon')">🌙 Ay</button>
+      <button onclick="selectTarget('Jupiter')">♃ Jüpiter</button>
+      <button onclick="runSatelliteSim()">🛰️ Uydu</button>
     </div>
     <div id="gpsBox">GPS paneli hazır.</div>
   </div>
 
-  <div id="sheetAudio" style="display:none">
-    <h3>SES / FREKANS ANALİZ</h3>
+  <div id="tabSigint" style="display:none">
+    <h3>🛡️ AKUSTİK SİNYAL İSTİHBARAT MOTORU V3</h3>
     <div class="grid">
-      <button onclick="startAudioAnalyzer()">🎙️ Dinle</button>
-      <button onclick="analyzeAmbient()">〰️ Spektrum</button>
-      <button onclick="galaxyTone()">🌌 Uzay Tonu</button>
-      <button onclick="stopAudioAnalyzer()">⏹️ Durdur</button>
+      <button onclick="startSigint()">🎙️ Başlat</button>
+      <button onclick="analyzeSigint()">📊 Analiz</button>
+      <button onclick="toggleSigintLive()">⚡ Canlı</button>
+      <button onclick="stopSigint()">⏹️ Durdur</button>
     </div>
-    <div id="audioBox">Mikrofon kapalı.</div>
-  </div>
 
-  <div id="sheetGalaxy" style="display:none">
-    <h3>GALAKSİ SES TANIYICI</h3>
-    <div class="grid">
-      <button onclick="galaxyTone()">🌠 Kozmik Ton</button>
-      <button onclick="nebulaScan()">☁️ Nebula Scan</button>
-      <button onclick="deepSpace()">🕳️ Deep Space</button>
-      <button onclick="pulseStar()">✨ Pulsar</button>
+    <div class="control">
+      <span>Alarm Eşiği</span>
+      <input id="alarmThreshold" type="range" min="20" max="95" step="1" value="70">
+      <b id="thrVal">70</b>
     </div>
-    <div id="audioBox2">Galaksi frekans paneli hazır.</div>
-  </div>
 
+    <div id="sigintBox">
+      Mikrofon tabanlı ortam frekans analizi. RF/telsiz dinlemez; akustik dB, frekans ve darbe tespiti yapar.
+    </div>
+  </div>
 </div>
 <script>
 const video=document.getElementById("video");
@@ -276,39 +210,33 @@ const ctx=canvas.getContext("2d",{willReadFrequently:true});
 
 let mode="astro", zoom=1, gain=1.6, sharp=1;
 let lat=null, lon=null, alt=0, heading=null, selectedTarget="Moon";
-let drawerOpen=false, sheetOpen=false;
-let trackingLock=true, currentLock=null;
-let captureMode="photo";
-let mediaRecorder=null, recordedChunks=[];
+let sheetOpen=false, trackingLock=true, currentLock=null;
+let captureMode="photo", mediaRecorder=null, recordedChunks=[];
+
 let audioCtx=null, analyser=null, micSource=null;
+let sigintLive=false, sigintTimer=null;
 
 const stars={
   Sirius:{name:"Sirius",ra:6.7525,dec:-16.7161},
   Vega:{name:"Vega",ra:18.6156,dec:38.7837}
 };
 
-function toggleDrawer(){
-  drawerOpen=!drawerOpen;
-  document.getElementById("drawer").classList.toggle("open",drawerOpen);
-}
 function toggleSheet(){
   sheetOpen=!sheetOpen;
   document.getElementById("sheet").classList.toggle("open",sheetOpen);
 }
-function openSheet(type){
+
+function openTab(tab){
   sheetOpen=true;
   document.getElementById("sheet").classList.add("open");
-  document.getElementById("sheetTargets").style.display="none";
-  document.getElementById("sheetGps").style.display="none";
-  document.getElementById("sheetAudio").style.display="none";
-  document.getElementById("sheetGalaxy").style.display="none";
 
-  if(type==="gps") document.getElementById("sheetGps").style.display="block";
-  else if(type==="audio") document.getElementById("sheetAudio").style.display="block";
-  else if(type==="galaxy") document.getElementById("sheetGalaxy").style.display="block";
-  else document.getElementById("sheetTargets").style.display="block";
+  document.getElementById("tabTargets").style.display="none";
+  document.getElementById("tabGps").style.display="none";
+  document.getElementById("tabSigint").style.display="none";
 
-  toggleDrawer();
+  if(tab==="gps") document.getElementById("tabGps").style.display="block";
+  else if(tab==="sigint") document.getElementById("tabSigint").style.display="block";
+  else document.getElementById("tabTargets").style.display="block";
 }
 
 function setCapture(m){
@@ -316,14 +244,27 @@ function setCapture(m){
   document.getElementById("mPhoto").classList.toggle("active",m==="photo");
   document.getElementById("mVideo").classList.toggle("active",m==="video");
 }
+
 function mainCapture(){
   if(captureMode==="photo") takePhoto();
   else toggleRecord();
 }
 
-document.getElementById("zoom").oninput=e=>{zoom=parseFloat(e.target.value);syncUI();}
-document.getElementById("gain").oninput=e=>{gain=parseFloat(e.target.value);syncUI();}
-document.getElementById("sharp").oninput=e=>{sharp=parseFloat(e.target.value);syncUI();}
+document.getElementById("zoom").oninput=e=>{
+  zoom=parseFloat(e.target.value);
+  syncUI();
+};
+document.getElementById("gain").oninput=e=>{
+  gain=parseFloat(e.target.value);
+  syncUI();
+};
+document.getElementById("sharp").oninput=e=>{
+  sharp=parseFloat(e.target.value);
+  syncUI();
+};
+document.getElementById("alarmThreshold").oninput=e=>{
+  document.getElementById("thrVal").textContent=e.target.value;
+};
 
 function syncUI(){
   document.getElementById("iZoom").textContent=zoom.toFixed(1)+"x";
@@ -334,19 +275,30 @@ function syncUI(){
 }
 
 async function startCamera(){
-  const stream=await navigator.mediaDevices.getUserMedia({
-    video:{facingMode:{ideal:"environment"},width:{ideal:1920},height:{ideal:1080}},
-    audio:true
-  });
-  video.srcObject=stream;
+  try{
+    const stream=await navigator.mediaDevices.getUserMedia({
+      video:{facingMode:{ideal:"environment"},width:{ideal:1920},height:{ideal:1080}},
+      audio:true
+    });
 
-  mediaRecorder=new MediaRecorder(stream,{mimeType:"video/webm"});
-  mediaRecorder.ondataavailable=e=>recordedChunks.push(e.data);
-  mediaRecorder.onstop=saveVideoFile;
+    video.srcObject=stream;
 
-  requestAnimationFrame(draw);
-  getLocation();
-  initCompass();
+    try{
+      mediaRecorder=new MediaRecorder(stream,{mimeType:"video/webm"});
+    }catch(e){
+      mediaRecorder=new MediaRecorder(stream);
+    }
+
+    mediaRecorder.ondataavailable=e=>recordedChunks.push(e.data);
+    mediaRecorder.onstop=saveVideoFile;
+
+    requestAnimationFrame(draw);
+    getLocation();
+    initCompass();
+
+  }catch(e){
+    alert("Kamera açılamadı. Kamera iznini kontrol et.");
+  }
 }
 
 function draw(){
@@ -370,15 +322,21 @@ function draw(){
 
       if(mode==="night"){
         let v=Math.min(255,lum*gain*2.4);
-        d[i]=v*.12; d[i+1]=Math.min(255,v*1.6); d[i+2]=v*.24;
+        d[i]=v*.12;
+        d[i+1]=Math.min(255,v*1.6);
+        d[i+2]=v*.24;
       }else if(mode==="moon"){
         let v=Math.min(255,(lum-18)*gain*2.15);
-        let c=(v-128)*1.38+128;c=Math.max(0,Math.min(255,c));
-        d[i]=c;d[i+1]=c;d[i+2]=c;
+        let c=(v-128)*1.38+128;
+        c=Math.max(0,Math.min(255,c));
+        d[i]=c; d[i+1]=c; d[i+2]=c;
       }else if(mode==="astro"){
         let v=Math.min(255,lum*gain*3.2);
-        if(v>100){d[i]=255;d[i+1]=255;d[i+2]=255;}
-        else{d[i]=v*.08;d[i+1]=v*.14;d[i+2]=v*.55;}
+        if(v>100){
+          d[i]=255; d[i+1]=255; d[i+2]=255;
+        }else{
+          d[i]=v*.08; d[i+1]=v*.14; d[i+2]=v*.55;
+        }
       }else{
         d[i]=Math.min(255,r*gain);
         d[i+1]=Math.min(255,g*gain);
@@ -387,39 +345,51 @@ function draw(){
     }
 
     ctx.putImageData(img,0,0);
+
     if(sharp>0) sharpenCanvas(sharp);
+
     drawCrosshair();
 
     if(trackingLock){
       currentLock=findBrightestTarget();
       drawTrackingBox(currentLock);
-      updateLockMini(currentLock);
     }
   }
+
   requestAnimationFrame(draw);
 }
 
 function drawCrosshair(){
   const w=canvas.width,h=canvas.height;
+
   ctx.save();
   ctx.strokeStyle="rgba(255,220,70,.88)";
   ctx.lineWidth=2;
+
   ctx.beginPath();
-  ctx.moveTo(w/2-45,h/2);ctx.lineTo(w/2+45,h/2);
-  ctx.moveTo(w/2,h/2-45);ctx.lineTo(w/2,h/2+45);
+  ctx.moveTo(w/2-45,h/2);
+  ctx.lineTo(w/2+45,h/2);
+  ctx.moveTo(w/2,h/2-45);
+  ctx.lineTo(w/2,h/2+45);
   ctx.stroke();
+
   ctx.beginPath();
   ctx.arc(w/2,h/2,62,0,Math.PI*2);
   ctx.stroke();
+
   ctx.restore();
 }
 
 function sharpenCanvas(amount){
   const w=canvas.width,h=canvas.height;
-  let img=ctx.getImageData(0,0,w,h),d=img.data,copy=new Uint8ClampedArray(d);
+  let img=ctx.getImageData(0,0,w,h);
+  let d=img.data;
+  let copy=new Uint8ClampedArray(d);
+
   for(let y=1;y<h-1;y++){
     for(let x=1;x<w-1;x++){
       let i=(y*w+x)*4;
+
       for(let c=0;c<3;c++){
         let center=copy[i+c]*5;
         let around=copy[i-4+c]+copy[i+4+c]+copy[i-w*4+c]+copy[i+w*4+c];
@@ -427,8 +397,10 @@ function sharpenCanvas(amount){
       }
     }
   }
+
   ctx.putImageData(img,0,0);
-}function findBrightestTarget(){
+}
+function findBrightestTarget(){
   const w=canvas.width,h=canvas.height;
   if(!w||!h)return null;
 
@@ -477,37 +449,8 @@ function drawTrackingBox(lock){
   ctx.restore();
 }
 
-function updateLockMini(lock){
-  const conf=document.getElementById("lockConf");
-  const fill=document.getElementById("lockFill");
-  const lx=document.getElementById("lockX");
-  const ly=document.getElementById("lockY");
-  const state=document.getElementById("lockState");
-
-  if(!trackingLock){
-    conf.textContent="0%"; fill.style.width="0%";
-    lx.textContent="--"; ly.textContent="--"; state.textContent="PASİF";
-    return;
-  }
-
-  if(!lock||lock.confidence<=0){
-    conf.textContent="0%"; fill.style.width="0%";
-    lx.textContent="--"; ly.textContent="--"; state.textContent="ARAMA";
-    return;
-  }
-
-  const dx=Math.round(lock.x-canvas.width/2);
-  const dy=Math.round(lock.y-canvas.height/2);
-  conf.textContent=lock.confidence+"%";
-  fill.style.width=lock.confidence+"%";
-  lx.textContent=dx;
-  ly.textContent=dy;
-  state.textContent=lock.confidence>80?"GÜÇLÜ":lock.confidence>55?"ORTA":"ZAYIF";
-}
-
 function toggleTrackingLock(){
   trackingLock=!trackingLock;
-  if(!trackingLock)updateLockMini(null);
 }
 
 function setMode(m){
@@ -515,8 +458,7 @@ function setMode(m){
   document.getElementById("iMode").textContent =
     m==="astro" ? "Astro" :
     m==="night" ? "Gece" :
-    m==="moon" ? "Ay" :
-    m==="thermal" ? "Termal" : "Normal";
+    m==="moon" ? "Ay" : "Normal";
 }
 
 function selectTarget(name){
@@ -527,13 +469,19 @@ function selectTarget(name){
 
 function getLocation(){
   if(!navigator.geolocation)return;
+
   navigator.geolocation.getCurrentPosition(pos=>{
     lat=pos.coords.latitude;
     lon=pos.coords.longitude;
     alt=pos.coords.altitude||0;
+
     document.getElementById("iGps").textContent=lat.toFixed(2);
+
     document.getElementById("gpsBox").innerHTML=
-      "GPS aktif<br>Lat: <b>"+lat.toFixed(5)+"</b><br>Lon: <b>"+lon.toFixed(5)+"</b><br>İrtifa: <b>"+Math.round(alt)+" m</b>";
+      "GPS aktif<br>Lat: <b>"+lat.toFixed(5)+"</b><br>"+
+      "Lon: <b>"+lon.toFixed(5)+"</b><br>"+
+      "İrtifa: <b>"+Math.round(alt)+" m</b>";
+
     updateTarget();
   },()=>{
     document.getElementById("iGps").textContent="Kapalı";
@@ -553,6 +501,7 @@ function initCompass(){
 
 function handleOrientation(e){
   let h=e.webkitCompassHeading || (360-e.alpha);
+
   if(h!==null&&!isNaN(h)){
     heading=h;
     document.getElementById("iCompass").textContent=Math.round(h)+"°";
@@ -570,23 +519,29 @@ function updateTarget(){
 
     if(stars[selectedTarget]){
       const s=stars[selectedTarget];
-      ra=s.ra; dec=s.dec;
+      ra=s.ra;
+      dec=s.dec;
       const hor=Astronomy.Horizon(now,observer,ra,dec,"normal");
-      az=hor.azimuth; altitude=hor.altitude;
+      az=hor.azimuth;
+      altitude=hor.altitude;
     }else{
       const equ=Astronomy.Equator(Astronomy.Body[selectedTarget],now,observer,true,true);
-      ra=equ.ra; dec=equ.dec;
+      ra=equ.ra;
+      dec=equ.dec;
       const hor=Astronomy.Horizon(now,observer,ra,dec,"normal");
-      az=hor.azimuth; altitude=hor.altitude;
+      az=hor.azimuth;
+      altitude=hor.altitude;
     }
 
     const diff=heading===null?null:angleDiff(heading,az);
+
     document.getElementById("gpsBox").innerHTML=
       "Hedef: <b>"+selectedTarget+"</b><br>"+
       "Azimut: <b>"+az.toFixed(1)+"°</b><br>"+
       "Yükselim: <b>"+altitude.toFixed(1)+"°</b><br>"+
       "Telefon farkı: <b>"+(diff===null?"--":diff.toFixed(0)+"°")+"</b><br>"+
       "Durum: <b>"+(altitude>0?"Görünür":"Ufuk altında")+"</b>";
+
   }catch(e){}
 }
 
@@ -598,6 +553,7 @@ function angleDiff(a,b){
 function sampleFrameStats(){
   const w=canvas.width,h=canvas.height;
   if(!w||!h)return null;
+
   const img=ctx.getImageData(0,0,w,h).data;
   let bright=0,total=0,edge=0,center=0;
 
@@ -605,13 +561,17 @@ function sampleFrameStats(){
     for(let x=20;x<w-20;x+=14){
       let i=(y*w+x)*4;
       let lum=(img[i]+img[i+1]+img[i+2])/3;
-      bright+=lum; total++;
+      bright+=lum;
+      total++;
+
       if(x>w*.36&&x<w*.64&&y>h*.36&&y<h*.64&&lum>180)center++;
+
       let i2=((y+1)*w+(x+1))*4;
       let lum2=(img[i2]+img[i2+1]+img[i2+2])/3;
       edge+=Math.abs(lum-lum2);
     }
   }
+
   return {avg:bright/total,sharp:edge/total,center};
 }
 
@@ -625,10 +585,12 @@ function runOfflineAI(){
     detect="Kilitli parlak hedef";
     score+=currentLock.confidence*.45;
   }
+
   if(s.avg>150&&s.center>12){
     detect="Ay benzeri parlak disk";
     score+=30;
   }
+
   if(s.sharp>18) score+=20;
   else advice.push("Keskinliği artır");
 
@@ -663,7 +625,7 @@ function autoTune(){
 
 function takePhoto(){
   const a=document.createElement("a");
-  a.download="UltraTelescope-V8.png";
+  a.download="UltraTelescope-V9-SIGINT.png";
   a.href=canvas.toDataURL("image/png");
   a.click();
 }
@@ -689,89 +651,167 @@ function saveVideoFile(){
   const url=URL.createObjectURL(blob);
   const a=document.createElement("a");
   a.href=url;
-  a.download="UltraTelescope-V8-Video.webm";
+  a.download="UltraTelescope-V9-Video.webm";
   a.click();
   URL.revokeObjectURL(url);
 }
 
-async function startAudioAnalyzer(){
+async function startSigint(){
   try{
     const stream=await navigator.mediaDevices.getUserMedia({audio:true});
     audioCtx=new (window.AudioContext||window.webkitAudioContext)();
     analyser=audioCtx.createAnalyser();
-    analyser.fftSize=2048;
+    analyser.fftSize=4096;
+
     micSource=audioCtx.createMediaStreamSource(stream);
     micSource.connect(analyser);
-    document.getElementById("audioBox").innerHTML="Mikrofon aktif. Spektrum hazır.";
-    analyzeAmbient();
+
+    document.getElementById("alarmState").textContent="AKTİF";
+    document.getElementById("sigintBox").innerHTML="SIGINT V3 aktif. Mikrofon ortam frekanslarını analiz ediyor.";
+
+    analyzeSigint();
   }catch(e){
-    document.getElementById("audioBox").innerHTML="Mikrofon izni alınamadı.";
+    document.getElementById("sigintBox").innerHTML="Mikrofon izni alınamadı.";
   }
 }
 
-function analyzeAmbient(){
+function stopSigint(){
+  if(sigintTimer)clearInterval(sigintTimer);
+  sigintLive=false;
+
+  if(audioCtx)audioCtx.close();
+  audioCtx=null;
+  analyser=null;
+  micSource=null;
+
+  document.getElementById("alarmState").textContent="PASİF";
+  document.getElementById("alarmFill").style.width="0%";
+  document.getElementById("iDb").textContent="0";
+  document.getElementById("sigType").textContent="--";
+  document.getElementById("sigRisk").textContent="0%";
+  document.getElementById("sigintBox").innerHTML="SIGINT durduruldu.";
+}
+
+function toggleSigintLive(){
+  sigintLive=!sigintLive;
+
+  if(sigintLive){
+    if(!analyser)startSigint();
+    sigintTimer=setInterval(analyzeSigint,700);
+  }else{
+    if(sigintTimer)clearInterval(sigintTimer);
+  }
+}
+
+function analyzeSigint(){
   if(!analyser){
-    document.getElementById("audioBox").innerHTML="Önce Dinle butonuna bas.";
+    document.getElementById("sigintBox").innerHTML="Önce Başlat butonuna bas.";
     return;
   }
 
-  const data=new Uint8Array(analyser.frequencyBinCount);
-  analyser.getByteFrequencyData(data);
+  const freq=new Uint8Array(analyser.frequencyBinCount);
+  const time=new Uint8Array(analyser.fftSize);
+  analyser.getByteFrequencyData(freq);
+  analyser.getByteTimeDomainData(time);
 
-  let max=0,idx=0,sum=0;
-  for(let i=0;i<data.length;i++){
-    sum+=data[i];
-    if(data[i]>max){max=data[i];idx=i;}
+  let sum=0,max=0,maxIdx=0,low=0,mid=0,high=0;
+
+  for(let i=0;i<freq.length;i++){
+    const v=freq[i];
+    sum+=v;
+    if(v>max){max=v;maxIdx=i;}
+
+    const hz=i*audioCtx.sampleRate/analyser.fftSize;
+    if(hz<120)low+=v;
+    else if(hz<2500)mid+=v;
+    else high+=v;
   }
 
-  const hz=Math.round(idx*audioCtx.sampleRate/analyser.fftSize);
-  const avg=Math.round(sum/data.length);
+  const avg=sum/freq.length;
+  const dominantHz=Math.round(maxIdx*audioCtx.sampleRate/analyser.fftSize);
 
-  document.getElementById("audioBox").innerHTML=
-    "Baskın frekans: <b>"+hz+" Hz</b><br>"+
-    "Sinyal yoğunluğu: <b>"+avg+"</b><br>"+
-    "Yorum: <b>"+frequencyComment(hz,avg)+"</b>";
+  let rms=0;
+  for(let i=0;i<time.length;i++){
+    const n=(time[i]-128)/128;
+    rms+=n*n;
+  }
+  rms=Math.sqrt(rms/time.length);
+
+  const db=Math.max(0,Math.min(120,Math.round(20*Math.log10(rms+0.00001)+100)));
+
+  let pulse=0;
+  for(let i=1;i<time.length;i++){
+    if(Math.abs(time[i]-time[i-1])>42)pulse++;
+  }
+
+  const type=classifySignal(dominantHz,low,mid,high,pulse,avg,db);
+  const fake=detectUnstableSignal(freq);
+  let risk=calculateRisk(db,pulse,avg,type,fake);
+
+  const threshold=parseInt(document.getElementById("alarmThreshold").value,10);
+
+  document.getElementById("iDb").textContent=db;
+  document.getElementById("sigType").textContent=type;
+  document.getElementById("sigRisk").textContent=risk+"%";
+  document.getElementById("alarmFill").style.width=risk+"%";
+
+  if(risk>=threshold){
+    document.getElementById("alarmState").textContent="KIRMIZI";
+    document.getElementById("alarmBox").style.borderColor="rgba(255,0,0,.9)";
+  }else{
+    document.getElementById("alarmState").textContent="AKTİF";
+    document.getElementById("alarmBox").style.borderColor="rgba(255,80,80,.45)";
+  }
+
+  document.getElementById("sigintBox").innerHTML=
+    "dB seviye: <b>"+db+"</b><br>"+
+    "Baskın frekans: <b>"+dominantHz+" Hz</b><br>"+
+    "Sinyal sınıfı: <b>"+type+"</b><br>"+
+    "Darbe yoğunluğu: <b>"+pulse+"</b><br>"+
+    "Sahte/kararsız sinyal: <b>"+(fake?"Evet":"Hayır")+"</b><br>"+
+    "Risk: <b>"+risk+"%</b>";
 }
 
-function frequencyComment(hz,avg){
-  if(avg<5)return "Sessiz / düşük sinyal";
-  if(hz<80)return "Derin düşük frekans";
-  if(hz<300)return "Ortam uğultusu";
-  if(hz<1200)return "Konuşma / çevre frekansı";
-  if(hz<5000)return "İnce yüksek frekans";
-  return "Keskin tiz sinyal";
+function classifySignal(hz,low,mid,high,pulse,avg,db){
+  if(db<25)return "Sessiz ortam";
+  if(pulse>180)return "Darbe / ani çarpma";
+  if(hz>=80&&hz<=320&&mid>high)return "İnsan sesi / konuşma";
+  if(hz<120&&low>mid)return "Düşük titreşim / motor";
+  if(hz>2500&&high>mid)return "Elektronik tiz sinyal";
+  if(avg>35&&low+mid+high>100000)return "Geniş bant gürültü";
+  return "Karışık ortam sinyali";
 }
 
-function stopAudioAnalyzer(){
-  if(audioCtx)audioCtx.close();
-  audioCtx=null; analyser=null; micSource=null;
-  document.getElementById("audioBox").innerHTML="Mikrofon kapatıldı.";
+function detectUnstableSignal(freq){
+  let peaks=0;
+  for(let i=2;i<freq.length-2;i++){
+    if(freq[i]>freq[i-1]+35 && freq[i]>freq[i+1]+35 && freq[i]>80)peaks++;
+  }
+  return peaks>35;
 }
 
-function galaxyTone(){
-  document.getElementById("audioBox2").innerHTML=
-    "🌌 Galaksi frekansı modu: Ortam sesi kozmik profil ile karşılaştırılır.<br>"+
-    "Not: iPhone radyo teleskop değildir; gerçek uzay radyo sinyali için SDR gerekir.";
-}
-function nebulaScan(){
-  document.getElementById("audioBox2").innerHTML="☁️ Nebula Scan: düşük yoğunluklu, geniş bant ambiyans aranıyor.";
-}
-function deepSpace(){
-  document.getElementById("audioBox2").innerHTML="🕳️ Deep Space: düşük frekanslı arka plan uğultusu analiz modu.";
-}
-function pulseStar(){
-  document.getElementById("audioBox2").innerHTML="✨ Pulsar: periyodik ses darbeleri aranır. Mikrofon kaynağı kullanılır.";
+function calculateRisk(db,pulse,avg,type,fake){
+  let risk=0;
+  if(db>70)risk+=30;
+  if(db>85)risk+=25;
+  if(pulse>120)risk+=25;
+  if(type.includes("Darbe"))risk+=25;
+  if(type.includes("Elektronik"))risk+=15;
+  if(fake)risk-=15;
+  if(avg>40)risk+=10;
+  return Math.max(0,Math.min(100,Math.round(risk)));
 }
 
 function runSatelliteSim(){
   document.getElementById("gpsBox").innerHTML=
     "🛰️ Uydu paneli hazır.<br>"+
-    "Gerçek canlı uydu/ISS geçişi için ek veri API gerekir.<br>"+
-    "Şu an GPS + pusula + hedef yönlendirme aktif.";
+    "Gerçek ISS/canlı uydu için veri API gerekir.<br>"+
+    "Şu an GPS + pusula + göksel hedef hesabı aktif.";
 }
 
 setInterval(updateTarget,1500);
 setInterval(runOfflineAI,4000);
+
 syncUI();
 selectTarget("Moon");
 startCamera();
