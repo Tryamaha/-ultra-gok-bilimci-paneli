@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
-<title>UltraTelescope V12 Fixed</title>
+<title>UltraTelescope V13 Radio Audio</title>
 <style>
 *{box-sizing:border-box}
 html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#000;color:#fff;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
@@ -12,7 +12,7 @@ video,canvas{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 video{z-index:1}
 canvas{z-index:2;pointer-events:none}
 #grid{position:absolute;inset:0;z-index:3;background-image:linear-gradient(rgba(0,255,90,.12) 1px,transparent 1px),linear-gradient(90deg,rgba(0,255,90,.12) 1px,transparent 1px);background-size:48px 48px;pointer-events:none}
-.glass{background:rgba(0,0,0,.72);border:1px solid rgba(255,255,255,.16);box-shadow:0 0 20px rgba(0,255,90,.16);backdrop-filter:blur(12px)}
+.glass{background:rgba(0,0,0,.76);border:1px solid rgba(255,255,255,.16);box-shadow:0 0 20px rgba(0,255,90,.16);backdrop-filter:blur(12px)}
 #top{position:absolute;top:calc(env(safe-area-inset-top) + 18px);left:18px;right:18px;z-index:20;display:flex;align-items:center;gap:12px}
 #menu{width:76px;height:76px;border-radius:24px;color:#fff;font-size:36px}
 #titleBox{flex:1;text-align:center}
@@ -39,12 +39,20 @@ canvas{z-index:2;pointer-events:none}
 .navBtn{background:transparent;border:0;color:#fff;font-size:14px;font-weight:700}
 .navBtn span{display:block;font-size:32px;margin-bottom:4px}
 #shoot{width:96px;height:96px;border-radius:50%;border:8px solid #ffe93e;background:rgba(255,255,255,.04);box-shadow:0 0 25px #ffea37;margin:auto}
-#drawer{position:absolute;left:20px;right:20px;bottom:145px;height:32vh;z-index:24;border-radius:34px;padding:18px;overflow:auto;display:none}
+#drawer{position:absolute;left:20px;right:20px;bottom:145px;height:34vh;z-index:24;border-radius:34px;padding:18px;overflow:auto;display:none}
 #drawer.open{display:block}
 #handle{width:74px;height:8px;background:#777;border-radius:10px;margin:0 auto 18px}
 .row{display:grid;grid-template-columns:105px 1fr 58px;align-items:center;gap:10px;margin:13px 0}
 .row b{color:#20ff68;text-align:right}
 input[type=range]{width:100%;accent-color:#1bff61}
+#extraBox{margin-top:10px;line-height:1.45;font-size:13px;color:#dfffe6}
+#radioPanel{display:none;margin-top:12px}
+.radioGrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.radioBox{padding:10px;border-radius:14px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);font-size:12px;line-height:1.45}
+.radioBox b{color:#5ff2ff}
+#sMeterBar{height:14px;background:#101010;border-radius:99px;overflow:hidden;margin-top:7px;border:1px solid #333}
+#sMeterFill{height:100%;width:0;background:linear-gradient(90deg,#00ff5d,#ffe93e,#ff3434)}
+#spectrum{width:100%;height:90px;background:#050505;border-radius:12px;margin-top:10px;border:1px solid #222}
 #camError{position:absolute;left:24px;right:24px;top:46%;z-index:40;background:rgba(0,0,0,.85);border:1px solid #ff5555;border-radius:18px;padding:18px;text-align:center;display:none}
 </style>
 </head>
@@ -59,8 +67,8 @@ input[type=range]{width:100%;accent-color:#1bff61}
 <div id="top">
 <button id="menu" class="glass" onclick="toggleDrawer()">☰</button>
 <div id="titleBox">
-<div id="title">UltraTelescope V12 NASA</div>
-<div id="sub">Professional Astro Optics + NASA API</div>
+<div id="title">UltraTelescope V13 NASA</div>
+<div id="sub">Professional Astro Optics + Radio Audio Panel</div>
 </div>
 <div id="online"><i></i>ONLINE</div>
 </div>
@@ -83,16 +91,29 @@ input[type=range]{width:100%;accent-color:#1bff61}
 <button class="rail glass"><em>🎯</em>TRACK</button>
 <button class="rail glass" onclick="loadNASA()"><em>🚀</em>NASA</button>
 <button class="rail glass" onclick="toggleThermal()"><em>🌙</em>TERMAL</button>
-<button class="rail glass" onclick="startAudio()"><em>🎙️</em>SES</button>
+<button class="rail glass" onclick="startAudio()"><em>🎙️</em>RADIO</button>
 <button class="rail glass" onclick="takePhoto()"><em>📷</em>FOTO</button>
 </div>
 
 <div id="drawer" class="glass">
 <div id="handle"></div>
+
 <div class="row"><span>ZOOM</span><input id="zoomRange" type="range" min="1" max="200" value="1"><b id="zVal">1.0x</b></div>
 <div class="row"><span>NETLİK</span><input id="sharpRange" type="range" min="0" max="100" value="70"><b id="sVal">70%</b></div>
 <div class="row"><span>PARLAKLIK</span><input id="brightRange" type="range" min="30" max="160" value="100"><b id="bVal">100%</b></div>
+
 <div id="extraBox">Kamera aktif. Zoom 200x dijital simülasyondur.</div>
+
+<div id="radioPanel">
+<canvas id="spectrum"></canvas>
+<div class="radioGrid">
+<div class="radioBox">S-Metre: <b id="sMeter">S0</b><div id="sMeterBar"><div id="sMeterFill"></div></div></div>
+<div class="radioBox">dBFS: <b id="dbfsVal">--</b><br>Squelch: <b id="squelchState">Kapalı</b></div>
+<div class="radioBox">Baskın Frekans: <b id="domFreq">-- Hz</b><br>Modülasyon: <b id="modType">--</b></div>
+<div class="radioBox">Operatör Yorumu:<br><b id="operatorNote">--</b></div>
+</div>
+<button onclick="stopAudio()" style="margin-top:10px;width:100%;height:44px;border-radius:14px;background:#360000;color:white;border:1px solid #ff5555;font-weight:900">SES ANALİZİ DURDUR</button>
+</div>
 </div>
 
 <div id="nav" class="glass">
@@ -100,7 +121,7 @@ input[type=range]{width:100%;accent-color:#1bff61}
 <button class="navBtn" onclick="loadNASA()"><span>🖼️</span>GALERİ</button>
 <button id="shoot" onclick="takePhoto()"></button>
 <button class="navBtn" onclick="toggleDrawer()"><span>⚙️</span>AYAR</button>
-<button class="navBtn" onclick="alert('Kamera izni ver. Zoom ve netliği çekmeceden ayarla.')"><span>❓</span>YARDIM</button>
+<button class="navBtn" onclick="alert('Radio modu sadece mikrofon ses analizi yapar; RF/telsiz frekansı dinlemez.')"><span>❓</span>YARDIM</button>
 </div>
 </div>
 
@@ -114,6 +135,13 @@ let zoomValue=1;
 let sharpValue=70;
 let brightValue=100;
 let thermal=false;
+
+let radioAudioCtx=null;
+let radioAnalyser=null;
+let radioTimer=null;
+let radioStream=null;
+let spectrumCanvas=null;
+let spectrumCtx=null;
 
 function toggleDrawer(){
 document.getElementById("drawer").classList.toggle("open");
@@ -194,13 +222,14 @@ modeTxt.textContent=thermal?"Thermal":"Astro";
 
 function takePhoto(){
 const a=document.createElement("a");
-a.download="UltraTelescope-V12.png";
+a.download="UltraTelescope-V13.png";
 a.href=canvas.toDataURL("image/png");
 a.click();
 }
 
 async function loadNASA(){
-toggleDrawer();
+document.getElementById("drawer").classList.add("open");
+document.getElementById("radioPanel").style.display="none";
 extraBox.innerHTML="NASA yükleniyor...";
 try{
 const r=await fetch(`https://api.nasa.gov/planetary/apod?api_key=${NASA_API_KEY}`);
@@ -211,21 +240,178 @@ extraBox.innerHTML="<b>"+d.title+"</b><br>"+(d.explanation||"").slice(0,180)+"..
 
 async function startAudio(){
 try{
-const stream=await navigator.mediaDevices.getUserMedia({audio:true});
-const audioCtx=new(window.AudioContext||window.webkitAudioContext)();
-const analyser=audioCtx.createAnalyser();
-const src=audioCtx.createMediaStreamSource(stream);
-src.connect(analyser);
-const data=new Uint8Array(analyser.frequencyBinCount);
-function loop(){
-analyser.getByteFrequencyData(data);
-let sum=0;
-for(const v of data)sum+=v;
-dbTxt.textContent=Math.round(sum/data.length*1.4);
-requestAnimationFrame(loop);
+document.getElementById("drawer").classList.add("open");
+document.getElementById("radioPanel").style.display="block";
+
+radioStream = await navigator.mediaDevices.getUserMedia({
+audio:{echoCancellation:false,noiseSuppression:false,autoGainControl:false}
+});
+
+radioAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+radioAnalyser = radioAudioCtx.createAnalyser();
+radioAnalyser.fftSize = 4096;
+radioAnalyser.smoothingTimeConstant = 0.72;
+
+const src = radioAudioCtx.createMediaStreamSource(radioStream);
+src.connect(radioAnalyser);
+
+spectrumCanvas=document.getElementById("spectrum");
+spectrumCtx=spectrumCanvas.getContext("2d");
+
+modeTxt.textContent="RADIO";
+extraBox.innerHTML="<b>🎙️ PROFESYONEL TELSİZ OPERATÖRÜ SES ANALİZİ</b><br>Mikrofon tabanlı akustik analiz aktif. RF/telsiz frekansı dinlemez.";
+
+if(radioTimer)clearInterval(radioTimer);
+radioTimer=setInterval(radioAnalyze,220);
+
+}catch(e){
+alert("Mikrofon izni gerekli.");
 }
-loop();
-}catch(e){alert("Mikrofon izni gerekli.")}
+}
+
+function stopAudio(){
+if(radioTimer)clearInterval(radioTimer);
+radioTimer=null;
+
+if(radioStream){
+radioStream.getTracks().forEach(t=>t.stop());
+radioStream=null;
+}
+
+if(radioAudioCtx){
+radioAudioCtx.close();
+radioAudioCtx=null;
+}
+
+radioAnalyser=null;
+dbTxt.textContent="0";
+modeTxt.textContent="Astro";
+extraBox.innerHTML="Ses analizi durduruldu.";
+document.getElementById("radioPanel").style.display="none";
+}
+
+function radioAnalyze(){
+if(!radioAnalyser || !radioAudioCtx)return;
+
+const freq=new Uint8Array(radioAnalyser.frequencyBinCount);
+const time=new Uint8Array(radioAnalyser.fftSize);
+
+radioAnalyser.getByteFrequencyData(freq);
+radioAnalyser.getByteTimeDomainData(time);
+
+let sum=0,max=0,maxIndex=0;
+let low=0,voice=0,high=0,noise=0;
+
+for(let i=0;i<freq.length;i++){
+const v=freq[i];
+sum+=v;
+
+if(v>max){
+max=v;
+maxIndex=i;
+}
+
+const hz=i*radioAudioCtx.sampleRate/radioAnalyser.fftSize;
+
+if(hz<250)low+=v;
+else if(hz>=250&&hz<=3400)voice+=v;
+else if(hz>3400&&hz<=8000)high+=v;
+else noise+=v;
+}
+
+let rms=0;
+let peakJump=0;
+
+for(let i=1;i<time.length;i++){
+const n=(time[i]-128)/128;
+rms+=n*n;
+if(Math.abs(time[i]-time[i-1])>38)peakJump++;
+}
+
+rms=Math.sqrt(rms/time.length);
+
+const dbfs=Math.round(20*Math.log10(rms+0.000001));
+const displayDb=Math.max(0,Math.min(120,dbfs+100));
+const dominantHz=Math.round(maxIndex*radioAudioCtx.sampleRate/radioAnalyser.fftSize);
+const avg=sum/freq.length;
+
+let sLevel=0;
+if(displayDb>25)sLevel=1;
+if(displayDb>35)sLevel=3;
+if(displayDb>45)sLevel=5;
+if(displayDb>55)sLevel=7;
+if(displayDb>65)sLevel=9;
+if(displayDb>78)sLevel=10;
+
+let squelch=displayDb<28?"Kapalı / sessiz":"Açık";
+let mod="Taşıyıcı yok";
+let note="Sinyal zayıf, ortam sessiz.";
+
+if(displayDb>=28&&voice>low&&voice>high){
+mod="AM/FM konuşma benzeri";
+note="Konuşma bandı güçlü. Operatör: okunabilir ses var.";
+}
+if(high>voice*0.9&&displayDb>35){
+mod="Tiz parazit / dijital ton";
+note="Üst frekans yoğun. Operatör: parazit veya elektronik ses olabilir.";
+}
+if(low>voice&&displayDb>35){
+mod="Düşük frekans uğultu";
+note="Düşük bant baskın. Operatör: motor, rüzgar veya mekanik uğultu.";
+}
+if(peakJump>180){
+mod="Darbe / kesik sinyal";
+note="Ani sıçrama var. Operatör: patlama, tıkırtı veya kesik darbeli ses.";
+}
+if(avg>55&&noise>voice){
+mod="Geniş bant gürültü";
+note="Spektrum yaygın. Operatör: yoğun ortam gürültüsü.";
+}
+
+dbTxt.textContent=displayDb;
+sMeter.textContent=sLevel>=10?"S9+":"S"+sLevel;
+sMeterFill.style.width=Math.min(100,sLevel*10)+"%";
+dbfsVal.textContent=dbfs+" dBFS";
+domFreq.textContent=dominantHz+" Hz";
+squelchState.textContent=squelch;
+modType.textContent=mod;
+operatorNote.textContent=note;
+
+drawRadioSpectrum(freq);
+}
+
+function drawRadioSpectrum(freq){
+if(!spectrumCanvas||!spectrumCtx)return;
+
+spectrumCanvas.width=spectrumCanvas.clientWidth*2;
+spectrumCanvas.height=spectrumCanvas.clientHeight*2;
+
+const w=spectrumCanvas.width;
+const h=spectrumCanvas.height;
+
+spectrumCtx.clearRect(0,0,w,h);
+spectrumCtx.fillStyle="#050505";
+spectrumCtx.fillRect(0,0,w,h);
+
+for(let i=0;i<freq.length;i+=4){
+const x=i/freq.length*w;
+const bar=(freq[i]/255)*h;
+let r=Math.min(255,freq[i]*2);
+let g=255;
+let b=60;
+spectrumCtx.fillStyle=`rgb(${r},${g},${b})`;
+spectrumCtx.fillRect(x,h-bar,2,bar);
+}
+
+spectrumCtx.strokeStyle="rgba(0,255,90,.35)";
+spectrumCtx.lineWidth=1;
+
+for(let y=0;y<h;y+=h/4){
+spectrumCtx.beginPath();
+spectrumCtx.moveTo(0,y);
+spectrumCtx.lineTo(w,y);
+spectrumCtx.stroke();
+}
 }
 
 function getGPS(){
@@ -241,6 +427,7 @@ if(r==="granted")window.addEventListener("deviceorientation",ori,true);
 });
 }else window.addEventListener("deviceorientation",ori,true);
 }
+
 function ori(e){
 let h=e.webkitCompassHeading||(360-e.alpha);
 if(h&&!isNaN(h))compassTxt.textContent=Math.round(h)+"°";
