@@ -3,68 +3,58 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
-<title>UltraTelescope V12</title>
+<title>UltraTelescope V12 Fixed</title>
 <style>
 *{box-sizing:border-box}
 html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#000;color:#fff;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
-#app{position:relative;width:100vw;height:100vh;background:radial-gradient(circle at center,#07120d,#000 70%);overflow:hidden}
-#app:before{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(0,255,90,.13) 1px,transparent 1px),linear-gradient(90deg,rgba(0,255,90,.13) 1px,transparent 1px);background-size:48px 48px;opacity:.65}
-video,canvas{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.38}
-button{cursor:pointer}
+#app{position:relative;width:100vw;height:100vh;background:#000;overflow:hidden}
+video,canvas{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+video{z-index:1}
+canvas{z-index:2;pointer-events:none}
+#grid{position:absolute;inset:0;z-index:3;background-image:linear-gradient(rgba(0,255,90,.12) 1px,transparent 1px),linear-gradient(90deg,rgba(0,255,90,.12) 1px,transparent 1px);background-size:48px 48px;pointer-events:none}
 .glass{background:rgba(0,0,0,.72);border:1px solid rgba(255,255,255,.16);box-shadow:0 0 20px rgba(0,255,90,.16);backdrop-filter:blur(12px)}
 #top{position:absolute;top:calc(env(safe-area-inset-top) + 18px);left:18px;right:18px;z-index:20;display:flex;align-items:center;gap:12px}
 #menu{width:76px;height:76px;border-radius:24px;color:#fff;font-size:36px}
 #titleBox{flex:1;text-align:center}
-#title{font-size:28px;font-weight:900;color:#dfffff;text-shadow:0 0 18px #70ffff}
-#sub{font-size:14px;color:#72eaff;margin-top:4px}
+#title{font-size:30px;font-weight:900;color:#dfffff;text-shadow:0 0 18px #70ffff}
+#sub{font-size:14px;color:#72eaff}
 #online{display:flex;align-items:center;gap:10px;color:#35ff63;font-size:18px;font-weight:900}
-#online i{width:20px;height:20px;background:#00ff5d;border-radius:50%;display:block;box-shadow:0 0 18px #00ff5d}
-#metrics{position:absolute;top:145px;left:20px;right:20px;z-index:20;height:82px;border-radius:28px;display:grid;grid-template-columns:repeat(6,1fr);overflow:hidden}
+#online i{width:22px;height:22px;background:#00ff5d;border-radius:50%;display:block;box-shadow:0 0 18px #00ff5d}
+#metrics{position:absolute;top:150px;left:20px;right:20px;z-index:20;height:82px;border-radius:28px;display:grid;grid-template-columns:repeat(6,1fr);overflow:hidden}
 .metric{text-align:center;padding:15px 2px;border-right:1px solid rgba(255,255,255,.13)}
 .metric:last-child{border-right:0}
 .metric span{font-size:13px;color:#ccc}
 .metric b{display:block;color:#5ff2ff;font-size:22px;margin-top:6px}
-#viewer{position:absolute;top:255px;left:28px;right:28px;height:38vh;z-index:12;border:3px solid #09a83a;border-radius:38px;box-shadow:0 0 18px rgba(0,255,80,.55);overflow:hidden;background:rgba(0,0,0,.2)}
+#viewer{position:absolute;top:260px;left:28px;right:28px;height:38vh;z-index:12;border:3px solid #09c846;border-radius:38px;box-shadow:0 0 22px rgba(0,255,80,.7);pointer-events:none}
 .corner{position:absolute;width:88px;height:88px;border:7px solid #0ad847}
 .c1{top:36px;left:36px;border-right:0;border-bottom:0}.c2{top:36px;right:36px;border-left:0;border-bottom:0}.c3{bottom:36px;left:36px;border-right:0;border-top:0}.c4{bottom:36px;right:36px;border-left:0;border-top:0}
 #cross{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:150px;height:150px;border:3px solid rgba(255,255,255,.13);border-radius:50%}
-#cross:before,#cross:after{content:"";position:absolute;background:#ffe94a;box-shadow:0 0 12px #ffe94a}
+#cross:before,#cross:after{content:"";position:absolute;background:#ffe94a;box-shadow:0 0 14px #ffe94a}
 #cross:before{width:4px;height:100px;left:73px;top:25px}
 #cross:after{height:4px;width:100px;left:25px;top:73px}
-#rightRail{position:absolute;right:20px;top:300px;z-index:22;display:flex;flex-direction:column;gap:14px}
+#rightRail{position:absolute;right:20px;top:330px;z-index:22;display:flex;flex-direction:column;gap:14px}
 .rail{width:86px;height:92px;border-radius:25px;color:#fff;font-weight:900;font-size:14px}
 .rail em{display:block;font-style:normal;font-size:30px;margin-bottom:6px}
 #nav{position:absolute;left:28px;right:28px;bottom:calc(env(safe-area-inset-bottom) + 25px);height:100px;z-index:25;border-radius:34px;display:grid;grid-template-columns:1fr 1fr 120px 1fr 1fr;align-items:center;text-align:center}
 .navBtn{background:transparent;border:0;color:#fff;font-size:14px;font-weight:700}
 .navBtn span{display:block;font-size:32px;margin-bottom:4px}
 #shoot{width:96px;height:96px;border-radius:50%;border:8px solid #ffe93e;background:rgba(255,255,255,.04);box-shadow:0 0 25px #ffea37;margin:auto}
-#drawer{position:absolute;left:20px;right:20px;bottom:145px;height:33vh;z-index:24;border-radius:34px;padding:18px;overflow:auto}
+#drawer{position:absolute;left:20px;right:20px;bottom:145px;height:32vh;z-index:24;border-radius:34px;padding:18px;overflow:auto;display:none}
+#drawer.open{display:block}
 #handle{width:74px;height:8px;background:#777;border-radius:10px;margin:0 auto 18px}
-.tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
-.tabs button{height:58px;border-radius:13px;color:white;font-weight:900;font-size:14px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15)}
-.tabs button.active{background:#0bbd3e}
-#panel{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:18px}
-.row{display:grid;grid-template-columns:105px 1fr 58px;align-items:center;gap:10px;margin:13px 0;color:#fff}
+.row{display:grid;grid-template-columns:105px 1fr 58px;align-items:center;gap:10px;margin:13px 0}
 .row b{color:#20ff68;text-align:right}
 input[type=range]{width:100%;accent-color:#1bff61}
-#targetCard{border-left:1px solid rgba(255,255,255,.12);padding-left:20px;line-height:1.8;font-size:16px}
-#targetCard h3{margin:0 0 8px;color:#18ff61}
-#radar{float:right;width:120px;height:120px;border-radius:50%;border:1px solid rgba(0,255,70,.55);background:radial-gradient(circle,transparent 0 20%,rgba(0,255,70,.25) 21% 22%,transparent 23% 43%,rgba(0,255,70,.25) 44% 45%,transparent 46%),linear-gradient(90deg,transparent 49%,rgba(0,255,70,.45) 50%,transparent 51%),linear-gradient(0deg,transparent 49%,rgba(0,255,70,.45) 50%,transparent 51%)}
-#radarDot{width:16px;height:16px;background:#18ff61;border-radius:50%;margin:52px 0 0 88px}
-.hidden{display:none}
-@media(max-height:760px){
-#viewer{height:33vh;top:238px}
-#drawer{height:30vh;bottom:125px}
-#nav{height:86px}
-#shoot{width:82px;height:82px}
-.rail{width:78px;height:78px}
-}
+#camError{position:absolute;left:24px;right:24px;top:46%;z-index:40;background:rgba(0,0,0,.85);border:1px solid #ff5555;border-radius:18px;padding:18px;text-align:center;display:none}
 </style>
 </head>
 <body>
 <div id="app">
 <video id="video" autoplay playsinline muted></video>
 <canvas id="canvas"></canvas>
+<div id="grid"></div>
+
+<div id="camError">Kamera açılamadı. Safari → site ayarları → Kamera iznini aç.</div>
 
 <div id="top">
 <button id="menu" class="glass" onclick="toggleDrawer()">☰</button>
@@ -77,10 +67,10 @@ input[type=range]{width:100%;accent-color:#1bff61}
 
 <div id="metrics" class="glass">
 <div class="metric"><span>MOD</span><b id="modeTxt">Astro</b></div>
-<div class="metric"><span>ZOOM</span><b id="zoomTxt">44.0x</b></div>
+<div class="metric"><span>ZOOM</span><b id="zoomTxt">1.0x</b></div>
 <div class="metric"><span>GPS</span><b id="gpsTxt">--</b></div>
 <div class="metric"><span>PUSULA</span><b id="compassTxt">--°</b></div>
-<div class="metric"><span>HEDEF</span><b id="targetTxt">Moon</b></div>
+<div class="metric"><span>HEDEF</span><b>Moon</b></div>
 <div class="metric"><span>dB</span><b id="dbTxt">0</b></div>
 </div>
 
@@ -90,50 +80,27 @@ input[type=range]{width:100%;accent-color:#1bff61}
 </div>
 
 <div id="rightRail">
-<button class="rail glass" onclick="toggleTrack()"><em>🎯</em>TRACK</button>
-<button class="rail glass" onclick="openTab('nasa')"><em>🚀</em>NASA</button>
-<button class="rail glass" onclick="openTab('thermal')"><em>🌙</em>TERMAL</button>
+<button class="rail glass"><em>🎯</em>TRACK</button>
+<button class="rail glass" onclick="loadNASA()"><em>🚀</em>NASA</button>
+<button class="rail glass" onclick="toggleThermal()"><em>🌙</em>TERMAL</button>
 <button class="rail glass" onclick="startAudio()"><em>🎙️</em>SES</button>
 <button class="rail glass" onclick="takePhoto()"><em>📷</em>FOTO</button>
 </div>
 
 <div id="drawer" class="glass">
 <div id="handle"></div>
-<div class="tabs">
-<button id="tOptik" class="active" onclick="openTab('optik')">OPTİK</button>
-<button id="tThermal" onclick="openTab('thermal')">TERMAL</button>
-<button id="tNasa" onclick="openTab('nasa')">NASA</button>
-<button id="tSes" onclick="openTab('ses')">SES</button>
-</div>
-
-<div id="panel">
-<div id="leftPanel">
-<div class="row"><span>ZOOM</span><input id="zoom" type="range" min="1" max="200" value="44"><b id="zVal">44.0x</b></div>
-<div class="row"><span>NETLİK</span><input id="sharp" type="range" min="0" max="100" value="78"><b id="sVal">78%</b></div>
-<div class="row"><span>PARLAKLIK</span><input id="bright" type="range" min="20" max="160" value="62"><b id="bVal">62%</b></div>
-<div class="row"><span>KONTRAST</span><input id="contrast" type="range" min="20" max="180" value="70"><b id="cVal">70%</b></div>
-<div id="extraBox" style="margin-top:12px;color:#bfffc8;font-size:14px">Optik panel aktif. Foto ekranı artık geniş vizör içinde, alt butonlar görünür.</div>
-</div>
-<div id="targetCard">
-<div id="radar"><div id="radarDot"></div></div>
-<h3>HEDEF BİLGİSİ</h3>
-Hedef: <b id="infoTarget">Moon</b><br>
-Azimut: <b id="azTxt">302.1°</b><br>
-Yükseklik: <b id="altTxt">48.7°</b><br>
-Mesafe: <b>384,400 km</b><br>
-Durum: <b style="color:#1cff5e">GÖRÜNÜR</b><br><br>
-<button onclick="selectTarget()" class="glass" style="color:white;border-radius:14px;padding:12px 18px">HEDEF SEÇ</button>
-<button onclick="calibrate()" class="glass" style="color:white;border-radius:14px;padding:12px 18px">KALİBRE ET</button>
-</div>
-</div>
+<div class="row"><span>ZOOM</span><input id="zoomRange" type="range" min="1" max="200" value="1"><b id="zVal">1.0x</b></div>
+<div class="row"><span>NETLİK</span><input id="sharpRange" type="range" min="0" max="100" value="70"><b id="sVal">70%</b></div>
+<div class="row"><span>PARLAKLIK</span><input id="brightRange" type="range" min="30" max="160" value="100"><b id="bVal">100%</b></div>
+<div id="extraBox">Kamera aktif. Zoom 200x dijital simülasyondur.</div>
 </div>
 
 <div id="nav" class="glass">
-<button class="navBtn" onclick="openTab('optik')"><span>👁️</span>LIVE</button>
-<button class="navBtn" onclick="openTab('nasa')"><span>🖼️</span>GALERİ</button>
+<button class="navBtn" onclick="toggleDrawer()"><span>👁️</span>LIVE</button>
+<button class="navBtn" onclick="loadNASA()"><span>🖼️</span>GALERİ</button>
 <button id="shoot" onclick="takePhoto()"></button>
-<button class="navBtn" onclick="openTab('optik')"><span>⚙️</span>AYAR</button>
-<button class="navBtn" onclick="help()"><span>❓</span>YARDIM</button>
+<button class="navBtn" onclick="toggleDrawer()"><span>⚙️</span>AYAR</button>
+<button class="navBtn" onclick="alert('Kamera izni ver. Zoom ve netliği çekmeceden ayarla.')"><span>❓</span>YARDIM</button>
 </div>
 </div>
 
@@ -143,78 +110,76 @@ const video=document.getElementById("video");
 const canvas=document.getElementById("canvas");
 const ctx=canvas.getContext("2d",{willReadFrequently:true});
 
-let zoom=44,sharp=78,bright=62,contrast=70,drawerOpen=true,mode="astro",thermal=false;
-let audioCtx=null,analyser=null;
+let zoomValue=1;
+let sharpValue=70;
+let brightValue=100;
+let thermal=false;
 
 function toggleDrawer(){
-drawerOpen=!drawerOpen;
-document.getElementById("drawer").style.display=drawerOpen?"block":"none";
+document.getElementById("drawer").classList.toggle("open");
 }
-function setActive(id){
-["tOptik","tThermal","tNasa","tSes"].forEach(x=>document.getElementById(x).classList.remove("active"));
-document.getElementById(id).classList.add("active");
-}
-function openTab(tab){
-drawerOpen=true;drawer.style.display="block";
-if(tab==="thermal"){
-setActive("tThermal");
-extraBox.innerHTML="🌙 Termal Ay Kamerası açık. 200x zoom simülasyonu ve ısı haritası görünümü aktif.";
-thermal=true;modeTxt.textContent="Thermal";
-}
-else if(tab==="nasa"){
-setActive("tNasa");
-extraBox.innerHTML="🚀 NASA API yükleniyor...";
-loadNASA();
-}
-else if(tab==="ses"){
-setActive("tSes");
-extraBox.innerHTML="🎙️ Ses paneli: mikrofonla dB analizi yapar. RF/telsiz dinlemez.";
-}
-else{
-setActive("tOptik");
-extraBox.innerHTML="Optik panel aktif. Foto ekranı geniş vizör içinde, alt butonlar görünür.";
-thermal=false;modeTxt.textContent="Astro";
-}
-}
-zoom.oninput=e=>{}
-document.getElementById("zoom").oninput=e=>{
-zoom=+e.target.value;zVal.textContent=zoom.toFixed(1)+"x";zoomTxt.textContent=zoom.toFixed(1)+"x";
+
+document.getElementById("zoomRange").oninput=e=>{
+zoomValue=Number(e.target.value);
+document.getElementById("zVal").textContent=zoomValue.toFixed(1)+"x";
+document.getElementById("zoomTxt").textContent=zoomValue.toFixed(1)+"x";
 };
-sharp.oninput=e=>{sharp=+e.target.value;sVal.textContent=sharp+"%"};
-bright.oninput=e=>{bright=+e.target.value;bVal.textContent=bright+"%"};
-contrast.oninput=e=>{contrast=+e.target.value;cVal.textContent=contrast+"%"};
+
+document.getElementById("sharpRange").oninput=e=>{
+sharpValue=Number(e.target.value);
+document.getElementById("sVal").textContent=sharpValue+"%";
+};
+
+document.getElementById("brightRange").oninput=e=>{
+brightValue=Number(e.target.value);
+document.getElementById("bVal").textContent=brightValue+"%";
+};
 
 async function startCamera(){
 try{
-const stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:"environment"},width:{ideal:1920},height:{ideal:1080}},audio:false});
+const stream=await navigator.mediaDevices.getUserMedia({
+video:{facingMode:{ideal:"environment"},width:{ideal:1920},height:{ideal:1080}},
+audio:false
+});
 video.srcObject=stream;
+await video.play();
 requestAnimationFrame(draw);
 getGPS();
 initCompass();
-}catch(e){alert("Kamera izni gerekli. Safari ayarlarından kamera iznini aç.")}
+}catch(e){
+document.getElementById("camError").style.display="block";
+}
 }
 
 function draw(){
-if(video.videoWidth){
-canvas.width=video.videoWidth;canvas.height=video.videoHeight;
-let realZoom=Math.min(zoom,60);
-let w=canvas.width/realZoom,h=canvas.height/realZoom;
-let sx=(canvas.width-w)/2,sy=(canvas.height-h)/2;
-ctx.drawImage(video,sx,sy,w,h,0,0,canvas.width,canvas.height);
-let img=ctx.getImageData(0,0,canvas.width,canvas.height),d=img.data;
-let br=bright/62,ct=contrast/70;
+if(video.videoWidth>0){
+canvas.width=video.videoWidth;
+canvas.height=video.videoHeight;
+
+const realZoom=Math.min(zoomValue,60);
+const sw=canvas.width/realZoom;
+const sh=canvas.height/realZoom;
+const sx=(canvas.width-sw)/2;
+const sy=(canvas.height-sh)/2;
+
+ctx.drawImage(video,sx,sy,sw,sh,0,0,canvas.width,canvas.height);
+
+let img=ctx.getImageData(0,0,canvas.width,canvas.height);
+let d=img.data;
+let br=brightValue/100;
+
 for(let i=0;i<d.length;i+=4){
-let r=d[i],g=d[i+1],b=d[i+2],lum=(r+g+b)/3;
+let r=d[i],g=d[i+1],b=d[i+2];
+let lum=(r+g+b)/3;
+
 if(thermal){
-d[i]=Math.min(255,lum*1.6*br);
+d[i]=Math.min(255,lum*1.7*br);
 d[i+1]=Math.min(255,lum*.9*br);
-d[i+2]=Math.max(0,255-lum*1.1);
+d[i+2]=Math.max(0,255-lum);
 }else{
-let v=Math.min(255,lum*2.3*br);
-v=(v-128)*ct+128;
-d[i]=Math.max(0,Math.min(255,v*.25));
-d[i+1]=Math.max(0,Math.min(255,v*.45));
-d[i+2]=Math.max(0,Math.min(255,v*.95));
+d[i]=Math.min(255,r*br);
+d[i+1]=Math.min(255,g*br);
+d[i+2]=Math.min(255,b*br);
 }
 }
 ctx.putImageData(img,0,0);
@@ -222,57 +187,53 @@ ctx.putImageData(img,0,0);
 requestAnimationFrame(draw);
 }
 
+function toggleThermal(){
+thermal=!thermal;
+modeTxt.textContent=thermal?"Thermal":"Astro";
+}
+
 function takePhoto(){
 const a=document.createElement("a");
-a.href=canvas.toDataURL("image/png");
 a.download="UltraTelescope-V12.png";
+a.href=canvas.toDataURL("image/png");
 a.click();
 }
-function toggleTrack(){
-viewer.style.boxShadow=viewer.style.boxShadow?"":"0 0 30px #00ff60";
-}
-function selectTarget(){
-const arr=["Moon","Jupiter","Mars","Saturn","Venus"];
-let n=arr[(arr.indexOf(targetTxt.textContent)+1)%arr.length];
-targetTxt.textContent=n;infoTarget.textContent=n;
-}
-function calibrate(){alert("Kalibrasyon tamamlandı. Telefonu yatay tut ve hedefi merkeze al.")}
-function help(){alert("LIVE: kamera, GALERİ/NASA: görseller, AYAR: optik kontrol, TERMAL: Ay simülasyonu, FOTO: ekran kaydı alır.")}
 
 async function loadNASA(){
+toggleDrawer();
+extraBox.innerHTML="NASA yükleniyor...";
 try{
-let r=await fetch(`https://api.nasa.gov/planetary/apod?api_key=${NASA_API_KEY}`);
-let d=await r.json();
-extraBox.innerHTML=`🚀 NASA APOD<br><b>${d.title}</b><br>${(d.explanation||"").slice(0,160)}...`;
+const r=await fetch(`https://api.nasa.gov/planetary/apod?api_key=${NASA_API_KEY}`);
+const d=await r.json();
+extraBox.innerHTML="<b>"+d.title+"</b><br>"+(d.explanation||"").slice(0,180)+"...";
 }catch(e){extraBox.innerHTML="NASA verisi alınamadı."}
 }
 
 async function startAudio(){
 try{
 const stream=await navigator.mediaDevices.getUserMedia({audio:true});
-audioCtx=new(window.AudioContext||window.webkitAudioContext)();
-analyser=audioCtx.createAnalyser();
-analyser.fftSize=1024;
+const audioCtx=new(window.AudioContext||window.webkitAudioContext)();
+const analyser=audioCtx.createAnalyser();
 const src=audioCtx.createMediaStreamSource(stream);
 src.connect(analyser);
-audioLoop();
-openTab("ses");
+const data=new Uint8Array(analyser.frequencyBinCount);
+function loop(){
+analyser.getByteFrequencyData(data);
+let sum=0;
+for(const v of data)sum+=v;
+dbTxt.textContent=Math.round(sum/data.length*1.4);
+requestAnimationFrame(loop);
+}
+loop();
 }catch(e){alert("Mikrofon izni gerekli.")}
 }
-function audioLoop(){
-if(!analyser)return;
-let data=new Uint8Array(analyser.frequencyBinCount);
-analyser.getByteFrequencyData(data);
-let sum=0;for(let v of data)sum+=v;
-let db=Math.round(sum/data.length*1.4);
-dbTxt.textContent=db;
-requestAnimationFrame(audioLoop);
-}
+
 function getGPS(){
 navigator.geolocation?.getCurrentPosition(p=>{
 gpsTxt.textContent=p.coords.latitude.toFixed(2);
 },()=>gpsTxt.textContent="Kapalı",{enableHighAccuracy:true});
 }
+
 function initCompass(){
 if(typeof DeviceOrientationEvent!=="undefined"&&typeof DeviceOrientationEvent.requestPermission==="function"){
 DeviceOrientationEvent.requestPermission().then(r=>{
@@ -284,6 +245,7 @@ function ori(e){
 let h=e.webkitCompassHeading||(360-e.alpha);
 if(h&&!isNaN(h))compassTxt.textContent=Math.round(h)+"°";
 }
+
 startCamera();
 </script>
 </body>
