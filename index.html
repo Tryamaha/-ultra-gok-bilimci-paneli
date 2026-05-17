@@ -3,540 +3,885 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
-<title>UltraTelescope V10 NASA</title>
+
+<title>UltraTelescope V11 NASA PRO</title>
+
+<meta name="theme-color" content="#000000">
+
 <script src="https://cdn.jsdelivr.net/npm/astronomy-engine@2.1.19/astronomy.browser.min.js"></script>
 
 <style>
-*{box-sizing:border-box}
-html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#000;color:#fff;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
-#app{position:relative;width:100vw;height:100vh;background:#000;overflow:hidden}
-video,canvas{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:#000}
-#topHud{position:absolute;top:env(safe-area-inset-top);left:0;right:0;z-index:50;padding:8px 10px;background:linear-gradient(to bottom,rgba(0,0,0,.8),rgba(0,0,0,0))}
-#title{text-align:center;font-weight:900;font-size:17px;color:#dffaff;text-shadow:0 0 12px #00eaff}
-#sub{text-align:center;font-size:10px;color:#78f3ff}
-.topBtn{position:absolute;top:8px;width:42px;height:42px;border-radius:14px;border:1px solid rgba(120,240,255,.35);background:rgba(0,0,0,.45);color:#fff;font-size:22px}
-#backBtn{left:10px} #menuBtn{right:10px}
-#miniStrip{position:absolute;top:74px;left:10px;right:10px;z-index:45;display:grid;grid-template-columns:repeat(6,1fr);background:rgba(0,0,0,.38);border:1px solid rgba(120,240,255,.25);border-radius:16px;overflow:hidden}
-.mini{text-align:center;padding:7px 2px;font-size:9px;border-right:1px solid rgba(255,255,255,.12)}
-.mini:last-child{border-right:0}
-.mini b{display:block;color:#73f8ff;font-size:12px;margin-top:2px}
-#alarmBox{position:absolute;top:145px;left:10px;z-index:46;width:145px;padding:10px;border-radius:16px;background:rgba(20,0,0,.45);border:1px solid rgba(255,80,80,.45);font-size:11px}
-#alarmState{font-weight:900;color:#ff5f5f}
-#alarmBar{height:6px;background:#2a1111;border-radius:99px;margin:7px 0;overflow:hidden}
-#alarmFill{height:100%;width:0;background:#ff3333}
-#rightRail{position:absolute;right:10px;top:145px;z-index:48;display:flex;flex-direction:column;gap:9px}
-.railBtn{width:58px;height:58px;border-radius:18px;border:1px solid rgba(120,240,255,.32);background:rgba(0,0,0,.42);color:#fff;font-size:22px}
-.railBtn span{display:block;font-size:8px;font-weight:900;margin-top:2px}
-#bottomBar{position:absolute;left:50%;bottom:calc(env(safe-area-inset-bottom) + 18px);transform:translateX(-50%);z-index:55;display:flex;align-items:center;gap:15px;background:rgba(0,0,0,.45);border:1px solid rgba(120,240,255,.25);border-radius:38px;padding:10px 16px}
-.modeBtn{border:0;border-radius:20px;padding:10px 14px;background:transparent;color:#fff;font-weight:900}
-.modeBtn.active{background:rgba(90,220,255,.30)}
-#shutter{width:72px;height:72px;border-radius:50%;border:6px solid #fff;background:#fff}
-#sheet{position:absolute;left:0;right:0;bottom:-560px;height:560px;z-index:80;background:rgba(7,14,22,.96);border-top:1px solid rgba(120,240,255,.35);border-radius:26px 26px 0 0;padding:28px 18px 22px;transition:.25s ease;overflow:auto}
-#sheet.open{bottom:0}
-#handle{position:absolute;top:-22px;left:50%;transform:translateX(-50%);width:80px;height:42px;border-radius:28px 28px 0 0;background:rgba(7,14,22,.96);border:1px solid rgba(120,240,255,.35);border-bottom:0;display:grid;place-items:center;color:#85f8ff;font-size:24px;font-weight:900}
-h3{margin:8px 0 10px;color:#7df3ff;font-size:13px}
-.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
-.grid button{border:1px solid rgba(255,255,255,.13);background:rgba(255,255,255,.075);color:#fff;border-radius:14px;padding:12px 6px;font-weight:900}
-.control{display:grid;grid-template-columns:110px 1fr 44px;gap:10px;align-items:center;padding:10px;background:rgba(255,255,255,.055);border-radius:14px;margin-bottom:8px}
-.box{margin-top:10px;padding:10px;border-radius:14px;background:rgba(255,255,255,.07);font-size:12px;line-height:1.45}
-.box img{width:100%;border-radius:14px;margin-top:8px}
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+-webkit-tap-highlight-color:transparent;
+}
+
+html,body{
+width:100%;
+height:100%;
+overflow:hidden;
+background:#000;
+font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+color:#fff;
+}
+
+#app{
+position:relative;
+width:100vw;
+height:100vh;
+overflow:hidden;
+background:#000;
+}
+
+video,canvas{
+position:absolute;
+inset:0;
+width:100%;
+height:100%;
+object-fit:cover;
+background:#000;
+}
+
+#hud{
+position:absolute;
+top:0;
+left:0;
+right:0;
+z-index:50;
+padding-top:env(safe-area-inset-top);
+background:linear-gradient(to bottom,rgba(0,0,0,.95),rgba(0,0,0,0));
+}
+
+#topbar{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:12px;
+}
+
+.topBtn{
+width:56px;
+height:56px;
+border-radius:18px;
+border:1px solid rgba(255,255,255,.18);
+background:rgba(0,0,0,.45);
+color:#fff;
+font-size:26px;
+backdrop-filter:blur(8px);
+}
+
+#titleWrap{
+text-align:center;
+flex:1;
+}
+
+#title{
+font-size:20px;
+font-weight:900;
+color:#dfffff;
+text-shadow:0 0 14px #00e1ff;
+}
+
+#subtitle{
+font-size:11px;
+color:#64dfff;
+margin-top:2px;
+}
+
+#status{
+display:flex;
+align-items:center;
+gap:8px;
+font-size:12px;
+font-weight:900;
+color:#6eff7c;
+}
+
+#dot{
+width:12px;
+height:12px;
+border-radius:50%;
+background:#00ff66;
+box-shadow:0 0 14px #00ff66;
+}
+
+#telemetry{
+margin:10px;
+display:grid;
+grid-template-columns:repeat(6,1fr);
+border:1px solid rgba(255,255,255,.1);
+background:rgba(0,0,0,.45);
+backdrop-filter:blur(10px);
+border-radius:22px;
+overflow:hidden;
+}
+
+.tItem{
+padding:12px 6px;
+text-align:center;
+border-right:1px solid rgba(255,255,255,.08);
+}
+
+.tItem:last-child{
+border-right:0;
+}
+
+.tLabel{
+font-size:11px;
+opacity:.8;
+}
+
+.tValue{
+margin-top:5px;
+font-size:14px;
+font-weight:900;
+color:#65eaff;
+}
+
+#crosshair{
+position:absolute;
+left:50%;
+top:50%;
+width:120px;
+height:120px;
+margin-left:-60px;
+margin-top:-60px;
+border:2px solid rgba(255,255,255,.15);
+border-radius:50%;
+z-index:25;
+}
+
+#crosshair::before,
+#crosshair::after{
+content:"";
+position:absolute;
+background:#ffe14a;
+}
+
+#crosshair::before{
+left:50%;
+top:10px;
+bottom:10px;
+width:2px;
+transform:translateX(-50%);
+}
+
+#crosshair::after{
+top:50%;
+left:10px;
+right:10px;
+height:2px;
+transform:translateY(-50%);
+}
+
+#scopeFrame{
+position:absolute;
+left:18px;
+right:18px;
+top:180px;
+bottom:220px;
+border:2px solid rgba(0,255,80,.6);
+border-radius:28px;
+z-index:20;
+pointer-events:none;
+box-shadow:0 0 20px rgba(0,255,80,.15);
+}
+
+.corner{
+position:absolute;
+width:60px;
+height:60px;
+border:4px solid #00ff55;
+}
+
+#c1{top:18px;left:18px;border-right:0;border-bottom:0}
+#c2{top:18px;right:18px;border-left:0;border-bottom:0}
+#c3{bottom:18px;left:18px;border-right:0;border-top:0}
+#c4{bottom:18px;right:18px;border-left:0;border-top:0}
+
+#rightRail{
+position:absolute;
+right:12px;
+top:220px;
+z-index:60;
+display:flex;
+flex-direction:column;
+gap:14px;
+}
+
+.rBtn{
+width:82px;
+height:82px;
+border-radius:22px;
+border:1px solid rgba(255,255,255,.12);
+background:rgba(0,0,0,.55);
+color:#fff;
+font-size:30px;
+backdrop-filter:blur(8px);
+display:flex;
+flex-direction:column;
+align-items:center;
+justify-content:center;
+font-weight:900;
+}
+
+.rBtn span{
+font-size:12px;
+margin-top:4px;
+}
+
+#bottom{
+position:absolute;
+left:0;
+right:0;
+bottom:0;
+z-index:70;
+padding-bottom:env(safe-area-inset-bottom);
+background:linear-gradient(to top,rgba(0,0,0,.98),rgba(0,0,0,0));
+}
+
+#bottomBar{
+display:flex;
+justify-content:space-around;
+align-items:center;
+padding:16px;
+}
+
+.bBtn{
+background:none;
+border:0;
+color:#fff;
+font-size:13px;
+display:flex;
+flex-direction:column;
+align-items:center;
+gap:8px;
+}
+
+.bIcon{
+font-size:30px;
+}
+
+#capture{
+width:96px;
+height:96px;
+border-radius:50%;
+border:6px solid #ffe33d;
+background:rgba(255,255,255,.08);
+box-shadow:0 0 20px rgba(255,230,50,.5);
+}
+
+#drawer{
+position:absolute;
+left:0;
+right:0;
+bottom:-480px;
+height:480px;
+z-index:90;
+background:rgba(5,10,18,.97);
+backdrop-filter:blur(18px);
+border-top-left-radius:30px;
+border-top-right-radius:30px;
+border-top:1px solid rgba(255,255,255,.1);
+transition:.3s;
+padding:18px;
+overflow:auto;
+}
+
+#drawer.open{
+bottom:0;
+}
+
+#handle{
+width:80px;
+height:8px;
+background:#666;
+border-radius:99px;
+margin:0 auto 18px auto;
+}
+
+.panelTitle{
+font-size:18px;
+font-weight:900;
+color:#68eaff;
+margin-bottom:18px;
+}
+
+.grid{
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:12px;
+}
+
+.card{
+background:rgba(255,255,255,.05);
+border:1px solid rgba(255,255,255,.08);
+border-radius:22px;
+padding:14px;
+}
+
+.card h3{
+font-size:14px;
+margin-bottom:10px;
+color:#6fe8ff;
+}
+
+.slider{
+width:100%;
+margin-top:8px;
+}
+
+#thermalView{
+margin-top:16px;
+height:220px;
+border-radius:24px;
+background:
+radial-gradient(circle at center,#ddd 0%,#777 35%,#333 70%,#000 100%);
+position:relative;
+overflow:hidden;
+}
+
+#thermalOverlay{
+position:absolute;
+inset:0;
+background:
+linear-gradient(to top,
+rgba(255,0,0,.2),
+rgba(255,255,0,.1),
+rgba(0,0,255,.15));
+mix-blend-mode:screen;
+}
+
+#nasaImage{
+width:100%;
+border-radius:18px;
+margin-top:10px;
+}
+
+.info{
+font-size:12px;
+line-height:1.5;
+opacity:.9;
+}
+
 </style>
 </head>
 
 <body>
+
 <div id="app">
+
 <video id="video" autoplay playsinline muted></video>
 <canvas id="canvas"></canvas>
 
-<div id="topHud">
-<button id="backBtn" class="topBtn" onclick="history.back()">‹</button>
-<button id="menuBtn" class="topBtn" onclick="toggleSheet()">☰</button>
-<div id="title">🔭 UltraTelescope V10 NASA</div>
-<div id="sub">Astro Optik + NASA API + Akustik Analiz Motoru</div>
+<div id="scopeFrame">
+<div class="corner" id="c1"></div>
+<div class="corner" id="c2"></div>
+<div class="corner" id="c3"></div>
+<div class="corner" id="c4"></div>
 </div>
 
-<div id="miniStrip">
-<div class="mini">Mod<b id="iMode">Astro</b></div>
-<div class="mini">Zoom<b id="iZoom">1.0x</b></div>
-<div class="mini">GPS<b id="iGps">--</b></div>
-<div class="mini">Pusula<b id="iCompass">--°</b></div>
-<div class="mini">Hedef<b id="iTarget">Ay</b></div>
-<div class="mini">dB<b id="iDb">0</b></div>
+<div id="crosshair"></div>
+
+<div id="hud">
+
+<div id="topbar">
+
+<button class="topBtn" onclick="toggleDrawer()">☰</button>
+
+<div id="titleWrap">
+<div id="title">UltraTelescope V11 NASA</div>
+<div id="subtitle">Professional Astro Optics + NASA API</div>
 </div>
 
-<div id="alarmBox">
-<div>🚨 Ses Analiz: <span id="alarmState">PASİF</span></div>
-<div id="alarmBar"><div id="alarmFill"></div></div>
-<div>Tür: <b id="sigType">--</b></div>
-<div>Risk: <b id="sigRisk">0%</b></div>
+<div id="status">
+<div id="dot"></div>
+ONLINE
+</div>
+
+</div>
+
+<div id="telemetry">
+
+<div class="tItem">
+<div class="tLabel">MOD</div>
+<div class="tValue" id="modeTxt">Astro</div>
+</div>
+
+<div class="tItem">
+<div class="tLabel">ZOOM</div>
+<div class="tValue" id="zoomTxt">1.0x</div>
+</div>
+
+<div class="tItem">
+<div class="tLabel">GPS</div>
+<div class="tValue" id="gpsTxt">--</div>
+</div>
+
+<div class="tItem">
+<div class="tLabel">PUSULA</div>
+<div class="tValue" id="compassTxt">--°</div>
+</div>
+
+<div class="tItem">
+<div class="tLabel">HEDEF</div>
+<div class="tValue" id="targetTxt">Moon</div>
+</div>
+
+<div class="tItem">
+<div class="tLabel">dB</div>
+<div class="tValue" id="dbTxt">0</div>
+</div>
+
+</div>
+
 </div>
 
 <div id="rightRail">
-<button class="railBtn" onclick="toggleTrackingLock()">🎯<span>LOCK</span></button>
-<button class="railBtn" onclick="openTab('gps')">🛰️<span>UYDU</span></button>
-<button class="railBtn" onclick="openTab('nasa')">🚀<span>NASA</span></button>
-<button class="railBtn" onclick="openTab('sigint')">🎙️<span>SES</span></button>
-<button class="railBtn" onclick="takePhoto()">📷<span>FOTO</span></button>
+
+<button class="rBtn" onclick="toggleTracking()">
+🎯
+<span>TRACK</span>
+</button>
+
+<button class="rBtn" onclick="loadNASA()">
+🚀
+<span>NASA</span>
+</button>
+
+<button class="rBtn" onclick="toggleThermal()">
+🌙
+<span>TERMAL</span>
+</button>
+
+<button class="rBtn" onclick="startAudio()">
+🎙️
+<span>SES</span>
+</button>
+
+<button class="rBtn" onclick="takePhoto()">
+📷
+<span>FOTO</span>
+</button>
+
 </div>
+
+<div id="bottom">
 
 <div id="bottomBar">
-<button class="modeBtn active" id="mPhoto" onclick="setCapture('photo')">📷 Foto</button>
-<button class="modeBtn" id="mVideo" onclick="setCapture('video')">🔴 Video</button>
-<button id="shutter" onclick="mainCapture()"></button>
-<button class="modeBtn" onclick="toggleSheet()">▲ Panel</button>
+
+<button class="bBtn">
+<div class="bIcon">👁️</div>
+LIVE
+</button>
+
+<button class="bBtn">
+<div class="bIcon">🖼️</div>
+GALERİ
+</button>
+
+<button id="capture" onclick="takePhoto()"></button>
+
+<button class="bBtn">
+<div class="bIcon">⚙️</div>
+AYAR
+</button>
+
+<button class="bBtn">
+<div class="bIcon">❓</div>
+YARDIM
+</button>
+
 </div>
 
-<div id="sheet">
-<div id="handle" onclick="toggleSheet()">⌃</div>
+</div>
 
-<div id="tabTargets">
-<h3>HEDEF / KAMERA</h3>
+<div id="drawer">
+
+<div id="handle"></div>
+
+<div class="panelTitle">
+GİZLİ ÇEKMECE — UZMAN KONTROLLER
+</div>
+
 <div class="grid">
-<button onclick="selectTarget('Moon')">🌙 Ay</button>
-<button onclick="selectTarget('Sun')">☀️ Güneş</button>
-<button onclick="selectTarget('Venus')">Venüs</button>
-<button onclick="selectTarget('Mars')">Mars</button>
-<button onclick="selectTarget('Jupiter')">Jüpiter</button>
-<button onclick="selectTarget('Saturn')">Satürn</button>
-<button onclick="selectTarget('Sirius')">Sirius</button>
-<button onclick="selectTarget('Vega')">Vega</button>
-</div>
 
-<h3>FİLTRELER</h3>
-<div class="grid">
-<button onclick="setMode('normal')">Normal</button>
-<button onclick="setMode('night')">Gece</button>
-<button onclick="setMode('moon')">Ay</button>
-<button onclick="setMode('astro')">Astro</button>
-</div>
+<div class="card">
 
-<h3>AYARLAR</h3>
-<div class="control"><span>Zoom</span><input id="zoom" type="range" min="1" max="20" step="0.1" value="1"><b id="zVal">1.0x</b></div>
-<div class="control"><span>Kazanç</span><input id="gain" type="range" min="1" max="7" step="0.1" value="1.6"><b id="gVal">1.6</b></div>
-<div class="control"><span>Keskinlik</span><input id="sharp" type="range" min="0" max="2.5" step="0.1" value="1"><b id="sVal">1.0</b></div>
+<h3>200X ZOOM</h3>
 
-<div class="grid">
-<button onclick="runOfflineAI()">🧠 AI Analiz</button>
-<button onclick="autoTune()">🎚️ Auto Tune</button>
-<button onclick="toggleTrackingLock()">🎯 Lock</button>
-<button onclick="takePhoto()">📷 Foto</button>
-</div>
-<div id="aiBox" class="box">Astro AI hazır.</div>
-</div>
+<input
+id="zoomSlider"
+class="slider"
+type="range"
+min="1"
+max="200"
+value="1">
 
-<div id="tabGps" style="display:none">
-<h3>GPS / GÖKSEL HEDEF</h3>
-<div class="grid">
-<button onclick="getLocation()">📍 GPS</button>
-<button onclick="selectTarget('Moon')">🌙 Ay</button>
-<button onclick="selectTarget('Jupiter')">♃ Jüpiter</button>
-<button onclick="runSatelliteSim()">🛰️ Uydu</button>
-</div>
-<div id="gpsBox" class="box">GPS paneli hazır.</div>
-</div>
-
-<div id="tabNasa" style="display:none">
-<h3>🚀 NASA API PANELİ</h3>
-<div class="grid">
-<button onclick="loadApod()">🌌 APOD</button>
-<button onclick="loadMarsPhotos()">🔴 Mars</button>
-<button onclick="loadNeo()">☄️ Asteroid</button>
-<button onclick="loadEpic()">🌍 Dünya</button>
-</div>
-<div id="nasaBox" class="box">NASA paneli hazır.</div>
-</div>
-
-<div id="tabSigint" style="display:none">
-<h3>🎙️ AKUSTİK ANALİZ MOTORU</h3>
-<div class="grid">
-<button onclick="startSigint()">🎙️ Başlat</button>
-<button onclick="analyzeSigint()">📊 Analiz</button>
-<button onclick="toggleSigintLive()">⚡ Canlı</button>
-<button onclick="stopSigint()">⏹️ Durdur</button>
-</div>
-<div class="control"><span>Alarm Eşiği</span><input id="alarmThreshold" type="range" min="20" max="95" step="1" value="70"><b id="thrVal">70</b></div>
-<div id="sigintBox" class="box">Mikrofon tabanlı ses, dB, frekans ve darbe analizi yapar. RF/telsiz dinlemez.</div>
+<div class="info">
+Profesyonel dijital teleskop zoom motoru
 </div>
 
 </div>
+
+<div class="card">
+
+<h3>TERMAL AY KAMERASI</h3>
+
+<button class="topBtn"
+style="width:100%;height:50px;font-size:16px"
+onclick="toggleThermal()">
+AÇ / KAPAT
+</button>
+
+<div class="info">
+Ay yüzeyi sıcaklık simülasyonu
+</div>
+
+</div>
+
+<div class="card">
+
+<h3>NASA APOD</h3>
+
+<div id="nasaInfo" class="info">
+NASA görseli yüklenmedi
+</div>
+
+<img id="nasaImage">
+
+</div>
+
+<div class="card">
+
+<h3>HEDEF BİLGİSİ</h3>
+
+<div class="info" id="targetInfo">
+Ay hedefleniyor...
+</div>
+
+</div>
+
+</div>
+
+<div id="thermalView">
+<div id="thermalOverlay"></div>
+</div>
+
+</div>
+
 </div>
 
 <script>
+
 const NASA_API_KEY="tMar4jWKq8pOg0b2nCxmZha65aS8RxgITmJTkia0";
 
 const video=document.getElementById("video");
 const canvas=document.getElementById("canvas");
-const ctx=canvas.getContext("2d",{willReadFrequently:true});
+const ctx=canvas.getContext("2d");
 
-let mode="astro",zoom=1,gain=1.6,sharp=1;
-let lat=null,lon=null,alt=0,heading=null,selectedTarget="Moon";
-let sheetOpen=false,trackingLock=true,currentLock=null;
-let captureMode="photo",mediaRecorder=null,recordedChunks=[];
-let audioCtx=null,analyser=null,micSource=null,sigintLive=false,sigintTimer=null;
+let zoom=1;
+let mode="astro";
+let thermal=false;
+let drawer=false;
+let tracking=true;
 
-const stars={
-Sirius:{ra:6.7525,dec:-16.7161},
-Vega:{ra:18.6156,dec:38.7837}
+const zoomSlider=document.getElementById("zoomSlider");
+
+zoomSlider.oninput=e=>{
+zoom=parseFloat(e.target.value);
+document.getElementById("zoomTxt").innerText=zoom.toFixed(1)+"x";
 };
 
-function toggleSheet(){sheetOpen=!sheetOpen;document.getElementById("sheet").classList.toggle("open",sheetOpen)}
-function openTab(tab){
-sheetOpen=true;document.getElementById("sheet").classList.add("open");
-["tabTargets","tabGps","tabNasa","tabSigint"].forEach(id=>document.getElementById(id).style.display="none");
-if(tab==="gps")document.getElementById("tabGps").style.display="block";
-else if(tab==="nasa")document.getElementById("tabNasa").style.display="block";
-else if(tab==="sigint")document.getElementById("tabSigint").style.display="block";
-else document.getElementById("tabTargets").style.display="block";
-}
-function setCapture(m){
-captureMode=m;
-document.getElementById("mPhoto").classList.toggle("active",m==="photo");
-document.getElementById("mVideo").classList.toggle("active",m==="video");
-}
-function mainCapture(){captureMode==="photo"?takePhoto():toggleRecord()}
-
-document.getElementById("zoom").oninput=e=>{zoom=parseFloat(e.target.value);syncUI()}
-document.getElementById("gain").oninput=e=>{gain=parseFloat(e.target.value);syncUI()}
-document.getElementById("sharp").oninput=e=>{sharp=parseFloat(e.target.value);syncUI()}
-document.getElementById("alarmThreshold").oninput=e=>document.getElementById("thrVal").textContent=e.target.value;
-
-function syncUI(){
-document.getElementById("iZoom").textContent=zoom.toFixed(1)+"x";
-document.getElementById("zVal").textContent=zoom.toFixed(1)+"x";
-document.getElementById("gVal").textContent=gain.toFixed(1);
-document.getElementById("sVal").textContent=sharp.toFixed(1);
-document.getElementById("iTarget").textContent=selectedTarget==="Moon"?"Ay":selectedTarget;
+function toggleDrawer(){
+drawer=!drawer;
+document.getElementById("drawer").classList.toggle("open",drawer);
 }
 
 async function startCamera(){
+
 try{
+
 const stream=await navigator.mediaDevices.getUserMedia({
-video:{facingMode:{ideal:"environment"},width:{ideal:1920},height:{ideal:1080}},
+video:{
+facingMode:{ideal:"environment"},
+width:{ideal:1920},
+height:{ideal:1080}
+},
 audio:true
 });
+
 video.srcObject=stream;
-try{mediaRecorder=new MediaRecorder(stream,{mimeType:"video/webm"})}
-catch(e){try{mediaRecorder=new MediaRecorder(stream)}catch(err){mediaRecorder=null}}
-if(mediaRecorder){
-mediaRecorder.ondataavailable=e=>recordedChunks.push(e.data);
-mediaRecorder.onstop=saveVideoFile;
-}
-requestAnimationFrame(draw);
-getLocation();
-initCompass();
-}catch(e){alert("Kamera açılamadı. Kamera iznini kontrol et.")}
+
+requestAnimationFrame(render);
+
+}catch(e){
+
+alert("Kamera izni gerekli");
+
 }
 
-function draw(){
+}
+
+function render(){
+
 if(video.videoWidth){
-canvas.width=video.videoWidth;canvas.height=video.videoHeight;
-const w=canvas.width/zoom,h=canvas.height/zoom,sx=(canvas.width-w)/2,sy=(canvas.height-h)/2;
-ctx.drawImage(video,sx,sy,w,h,0,0,canvas.width,canvas.height);
-let img=ctx.getImageData(0,0,canvas.width,canvas.height),d=img.data;
+
+canvas.width=video.videoWidth;
+canvas.height=video.videoHeight;
+
+const w=canvas.width/zoom;
+const h=canvas.height/zoom;
+
+const sx=(canvas.width-w)/2;
+const sy=(canvas.height-h)/2;
+
+ctx.drawImage(
+video,
+sx,
+sy,
+w,
+h,
+0,
+0,
+canvas.width,
+canvas.height
+);
+
+let img=ctx.getImageData(
+0,
+0,
+canvas.width,
+canvas.height
+);
+
+let d=img.data;
+
 for(let i=0;i<d.length;i+=4){
-let r=d[i],g=d[i+1],b=d[i+2],lum=(r+g+b)/3;
-if(mode==="night"){let v=Math.min(255,lum*gain*2.4);d[i]=v*.12;d[i+1]=Math.min(255,v*1.6);d[i+2]=v*.24}
-else if(mode==="moon"){let v=Math.min(255,(lum-18)*gain*2.15);let c=(v-128)*1.38+128;c=Math.max(0,Math.min(255,c));d[i]=c;d[i+1]=c;d[i+2]=c}
-else if(mode==="astro"){let v=Math.min(255,lum*gain*3.2);if(v>100){d[i]=255;d[i+1]=255;d[i+2]=255}else{d[i]=v*.08;d[i+1]=v*.14;d[i+2]=v*.55}}
-else{d[i]=Math.min(255,r*gain);d[i+1]=Math.min(255,g*gain);d[i+2]=Math.min(255,b*gain)}
-}
-ctx.putImageData(img,0,0);
-if(sharp>0)sharpenCanvas(sharp);
-drawCrosshair();
-if(trackingLock){currentLock=findBrightestTarget();drawTrackingBox(currentLock)}
-}
-requestAnimationFrame(draw);
-}
 
-function drawCrosshair(){
-const w=canvas.width,h=canvas.height;
-ctx.save();ctx.strokeStyle="rgba(255,220,70,.88)";ctx.lineWidth=2;
-ctx.beginPath();ctx.moveTo(w/2-45,h/2);ctx.lineTo(w/2+45,h/2);ctx.moveTo(w/2,h/2-45);ctx.lineTo(w/2,h/2+45);ctx.stroke();
-ctx.beginPath();ctx.arc(w/2,h/2,62,0,Math.PI*2);ctx.stroke();ctx.restore();
-}
+let r=d[i];
+let g=d[i+1];
+let b=d[i+2];
 
-function sharpenCanvas(amount){
-const w=canvas.width,h=canvas.height;let img=ctx.getImageData(0,0,w,h),d=img.data,copy=new Uint8ClampedArray(d);
-for(let y=1;y<h-1;y++){for(let x=1;x<w-1;x++){let i=(y*w+x)*4;for(let c=0;c<3;c++){let center=copy[i+c]*5,around=copy[i-4+c]+copy[i+4+c]+copy[i-w*4+c]+copy[i+w*4+c];d[i+c]=Math.max(0,Math.min(255,copy[i+c]+(center-around)*0.18*amount))}}}
-ctx.putImageData(img,0,0);
-}
+let lum=(r+g+b)/3;
 
-function findBrightestTarget(){
-const w=canvas.width,h=canvas.height;if(!w||!h)return null;
-const img=ctx.getImageData(0,0,w,h).data;let best={x:0,y:0,lum:0,confidence:0,size:70};
-for(let y=50;y<h-50;y+=10){for(let x=50;x<w-50;x+=10){let i=(y*w+x)*4,lum=(img[i]+img[i+1]+img[i+2])/3;if(lum>best.lum)best={x,y,lum,confidence:0,size:70}}}
-let local=0,total=0;
-for(let yy=-35;yy<=35;yy+=7){for(let xx=-35;xx<=35;xx+=7){let px=Math.max(0,Math.min(w-1,best.x+xx)),py=Math.max(0,Math.min(h-1,best.y+yy)),i=(py*w+px)*4,lum=(img[i]+img[i+1]+img[i+2])/3;if(lum>180)local++;total++}}
-best.confidence=Math.min(100,Math.round((best.lum/255)*55+(local/total)*45));
-best.size=best.confidence>82?110:best.confidence>60?90:70;
-if(best.lum<120)best.confidence=0;
-return best;
-}
+if(mode==="astro"){
 
-function drawTrackingBox(lock){
-if(!lock||lock.confidence<=0)return;
-const s=lock.size;
-ctx.save();ctx.strokeStyle="rgba(255,225,70,.98)";ctx.lineWidth=4;ctx.strokeRect(lock.x-s/2,lock.y-s/2,s,s);
-ctx.fillStyle="rgba(0,0,0,.65)";ctx.fillRect(lock.x-s/2,lock.y-s/2-28,135,24);
-ctx.fillStyle="#ffe56a";ctx.font="18px -apple-system";ctx.fillText("LOCK "+lock.confidence+"%",lock.x-s/2+8,lock.y-s/2-9);ctx.restore();
-}
+let v=Math.min(255,lum*2.3);
 
-function toggleTrackingLock(){trackingLock=!trackingLock}
-function setMode(m){
-mode=m;
-document.getElementById("iMode").textContent=m==="astro"?"Astro":m==="night"?"Gece":m==="moon"?"Ay":"Normal";
-}
-function selectTarget(name){
-if(name==="Sun")alert("Güneşe doğrudan bakma ve uzun süre zoom yapma. Göz ve kamera sensörü için risklidir.");
-selectedTarget=name;syncUI();updateTarget();
-}
+if(v>120){
 
-function getLocation(){
-if(!navigator.geolocation)return;
-navigator.geolocation.getCurrentPosition(pos=>{
-lat=pos.coords.latitude;lon=pos.coords.longitude;alt=pos.coords.altitude||0;
-document.getElementById("iGps").textContent=lat.toFixed(2);
-document.getElementById("gpsBox").innerHTML="GPS aktif<br>Lat: <b>"+lat.toFixed(5)+"</b><br>Lon: <b>"+lon.toFixed(5)+"</b><br>İrtifa: <b>"+Math.round(alt)+" m</b>";
-updateTarget();
-},()=>{document.getElementById("iGps").textContent="Kapalı"},{enableHighAccuracy:true,timeout:10000,maximumAge:1000});
-}
+d[i]=255;
+d[i+1]=255;
+d[i+2]=255;
 
-function initCompass(){
-if(typeof DeviceOrientationEvent!=="undefined"&&typeof DeviceOrientationEvent.requestPermission==="function"){
-DeviceOrientationEvent.requestPermission().then(res=>{if(res==="granted")window.addEventListener("deviceorientation",handleOrientation,true)});
-}else window.addEventListener("deviceorientation",handleOrientation,true);
-}
-
-function handleOrientation(e){
-let h=e.webkitCompassHeading||(360-e.alpha);
-if(h!==null&&!isNaN(h)){heading=h;document.getElementById("iCompass").textContent=Math.round(h)+"°";updateTarget()}
-}
-
-function updateTarget(){
-if(!selectedTarget||lat===null||lon===null)return;
-try{
-const now=new Date(),observer=new Astronomy.Observer(lat,lon,alt);
-let az,altitude,ra,dec;
-if(stars[selectedTarget]){
-const s=stars[selectedTarget];ra=s.ra;dec=s.dec;
-const hor=Astronomy.Horizon(now,observer,ra,dec,"normal");az=hor.azimuth;altitude=hor.altitude;
 }else{
-const equ=Astronomy.Equator(Astronomy.Body[selectedTarget],now,observer,true,true);
-ra=equ.ra;dec=equ.dec;
-const hor=Astronomy.Horizon(now,observer,ra,dec,"normal");az=hor.azimuth;altitude=hor.altitude;
-}
-const diff=heading===null?null:angleDiff(heading,az);
-document.getElementById("gpsBox").innerHTML=
-"Hedef: <b>"+selectedTarget+"</b><br>Azimut: <b>"+az.toFixed(1)+"°</b><br>Yükselim: <b>"+altitude.toFixed(1)+"°</b><br>Telefon farkı: <b>"+(diff===null?"--":diff.toFixed(0)+"°")+"</b><br>Durum: <b>"+(altitude>0?"Görünür":"Ufuk altında")+"</b>";
-}catch(e){}
-}
-function angleDiff(a,b){let d=Math.abs(a-b)%360;return d>180?360-d:d}
 
-function sampleFrameStats(){
-const w=canvas.width,h=canvas.height;if(!w||!h)return null;
-const img=ctx.getImageData(0,0,w,h).data;let bright=0,total=0,edge=0,center=0;
-for(let y=20;y<h-20;y+=14){for(let x=20;x<w-20;x+=14){let i=(y*w+x)*4,lum=(img[i]+img[i+1]+img[i+2])/3;bright+=lum;total++;if(x>w*.36&&x<w*.64&&y>h*.36&&y<h*.64&&lum>180)center++;let i2=((y+1)*w+(x+1))*4,lum2=(img[i2]+img[i2+1]+img[i2+2])/3;edge+=Math.abs(lum-lum2)}}
-return {avg:bright/total,sharp:edge/total,center};
+d[i]=v*.08;
+d[i+1]=v*.12;
+d[i+2]=v*.6;
+
 }
 
-function runOfflineAI(){
-const s=sampleFrameStats();if(!s)return;
-let detect="Belirsiz",score=0,advice=[];
-if(currentLock&&currentLock.confidence>55){detect="Kilitli parlak hedef";score+=currentLock.confidence*.45}
-if(s.avg>150&&s.center>12){detect="Ay benzeri parlak disk";score+=30}
-if(s.sharp>18)score+=20;else advice.push("Keskinliği artır");
-if(s.avg<70)advice.push("Kazancı artır");
-if(s.avg>190)advice.push("Kazancı azalt");
-if(s.center<6)advice.push("Hedefi merkeze al");
-if(zoom<8&&detect!=="Belirsiz")advice.push("Zoom artır");
-score=Math.min(100,Math.round(score+s.center));
-document.getElementById("aiBox").innerHTML="AI Tespit: <b>"+detect+"</b><br>Gözlem Skoru: <b>"+score+"/100</b><br>Parlaklık: "+Math.round(s.avg)+" | Netlik: "+Math.round(s.sharp)+" | Merkez: "+s.center+"<br>Öneri: <b>"+(advice.length?advice.join(" | "):"Ayarlar iyi görünüyor")+"</b>";
 }
 
-function autoTune(){
-const s=sampleFrameStats();if(!s)return;
-if(s.avg<80)gain=Math.min(7,gain+.4);
-if(s.avg>185)gain=Math.max(1,gain-.4);
-if(s.sharp<11)sharp=Math.min(2.5,sharp+.2);
-if(currentLock&&currentLock.confidence>60&&zoom<16)zoom+=.5;
-document.getElementById("gain").value=gain;document.getElementById("sharp").value=sharp;document.getElementById("zoom").value=zoom;
-syncUI();runOfflineAI();
+if(thermal){
+
+d[i]=lum*1.5;
+d[i+1]=lum*.6;
+d[i+2]=255-lum;
+
+}
+
+}
+
+ctx.putImageData(img,0,0);
+
+stabilize();
+
+}
+
+requestAnimationFrame(render);
+
+}
+
+function stabilize(){
+
+ctx.save();
+
+ctx.strokeStyle="rgba(0,255,100,.4)";
+ctx.lineWidth=1;
+
+for(let i=0;i<canvas.width;i+=60){
+
+ctx.beginPath();
+ctx.moveTo(i,0);
+ctx.lineTo(i,canvas.height);
+ctx.stroke();
+
+}
+
+for(let i=0;i<canvas.height;i+=60){
+
+ctx.beginPath();
+ctx.moveTo(0,i);
+ctx.lineTo(canvas.width,i);
+ctx.stroke();
+
+}
+
+ctx.restore();
+
+}
+
+function toggleTracking(){
+
+tracking=!tracking;
+
+document.querySelectorAll(".corner").forEach(c=>{
+
+c.style.borderColor=
+tracking?"#00ff66":"#666";
+
+});
+
+}
+
+function toggleThermal(){
+
+thermal=!thermal;
+
+document.getElementById("thermalOverlay").style.display=
+thermal?"block":"none";
+
 }
 
 function takePhoto(){
+
 const a=document.createElement("a");
-a.download="UltraTelescope-V10-NASA.png";
+
 a.href=canvas.toDataURL("image/png");
+
+a.download="UltraTelescope-V11.png";
+
 a.click();
+
 }
 
-function toggleRecord(){
-if(!mediaRecorder){alert("Bu cihazda video kayıt desteklenmiyor olabilir.");return}
-if(mediaRecorder.state==="recording"){mediaRecorder.stop();document.getElementById("shutter").style.background="white"}
-else{recordedChunks=[];mediaRecorder.start();document.getElementById("shutter").style.background="#ff2b2b"}
-}
+async function loadNASA(){
 
-function saveVideoFile(){
-const blob=new Blob(recordedChunks,{type:"video/webm"});
-const url=URL.createObjectURL(blob);
-const a=document.createElement("a");
-a.href=url;a.download="UltraTelescope-V10-Video.webm";a.click();URL.revokeObjectURL(url);
-}
-
-async function loadApod(){
-openTab("nasa");
-const box=document.getElementById("nasaBox");
-box.innerHTML="NASA APOD yükleniyor...";
 try{
-const r=await fetch(`https://api.nasa.gov/planetary/apod?api_key=${NASA_API_KEY}`);
+
+const r=await fetch(
+`https://api.nasa.gov/planetary/apod?api_key=${NASA_API_KEY}`
+);
+
 const d=await r.json();
-box.innerHTML="<b>NASA Günün Uzay Görseli</b><br>"+d.title+"<br>"+(d.media_type==="image"?`<img src="${d.url}">`:"Video içerik: "+d.url)+"<br><br>"+(d.explanation||"").slice(0,350)+"...";
-}catch(e){box.innerHTML="NASA APOD alınamadı."}
+
+document.getElementById("nasaInfo").innerHTML=
+"<b>"+d.title+"</b><br><br>"+
+d.explanation.slice(0,140)+"...";
+
+if(d.media_type==="image"){
+
+document.getElementById("nasaImage").src=d.url;
+
 }
 
-async function loadMarsPhotos(){
-openTab("nasa");
-const box=document.getElementById("nasaBox");
-box.innerHTML="Mars Rover fotoğrafı yükleniyor...";
+}catch(e){
+
+document.getElementById("nasaInfo").innerHTML=
+"NASA verisi alınamadı";
+
+}
+
+}
+
+async function startAudio(){
+
 try{
-const r=await fetch(`https://api.nasa.gov/mars-photos/api/v1/rovers/curiosity/photos?sol=1000&api_key=${NASA_API_KEY}`);
-const d=await r.json();
-if(!d.photos||!d.photos.length){box.innerHTML="Mars fotoğrafı bulunamadı.";return}
-const p=d.photos[Math.floor(Math.random()*Math.min(d.photos.length,20))];
-box.innerHTML="<b>Mars Rover</b><br>Rover: "+p.rover.name+"<br>Kamera: "+p.camera.full_name+"<br>Tarih: "+p.earth_date+`<img src="${p.img_src}">`;
-}catch(e){box.innerHTML="Mars verisi alınamadı."}
+
+const stream=
+await navigator.mediaDevices.getUserMedia({audio:true});
+
+const audioCtx=
+new(window.AudioContext||window.webkitAudioContext)();
+
+const analyser=
+audioCtx.createAnalyser();
+
+const source=
+audioCtx.createMediaStreamSource(stream);
+
+source.connect(analyser);
+
+const data=
+new Uint8Array(analyser.frequencyBinCount);
+
+function loop(){
+
+analyser.getByteFrequencyData(data);
+
+let sum=0;
+
+for(let i=0;i<data.length;i++){
+
+sum+=data[i];
+
 }
 
-async function loadNeo(){
-openTab("nasa");
-const box=document.getElementById("nasaBox");
-box.innerHTML="Yakın asteroid verisi yükleniyor...";
-try{
-const today=new Date().toISOString().slice(0,10);
-const r=await fetch(`https://api.nasa.gov/neo/rest/v1/feed?start_date=${today}&end_date=${today}&api_key=${NASA_API_KEY}`);
-const d=await r.json();
-const arr=d.near_earth_objects[today]||[];
-if(!arr.length){box.innerHTML="Bugün yakın asteroid verisi yok.";return}
-const list=arr.slice(0,5).map(o=>{
-const dia=Math.round(o.estimated_diameter.meters.estimated_diameter_max);
-const miss=Math.round(o.close_approach_data[0].miss_distance.kilometers);
-return "☄️ <b>"+o.name+"</b><br>Çap: "+dia+" m | Uzaklık: "+miss.toLocaleString("tr-TR")+" km | Riskli: "+(o.is_potentially_hazardous_asteroid?"Evet":"Hayır");
-}).join("<hr>");
-box.innerHTML="<b>NASA Yakın Dünya Asteroidleri</b><br><br>"+list;
-}catch(e){box.innerHTML="Asteroid verisi alınamadı."}
+let db=Math.round(sum/data.length);
+
+document.getElementById("dbTxt").innerText=db;
+
+requestAnimationFrame(loop);
+
 }
 
-async function loadEpic(){
-openTab("nasa");
-const box=document.getElementById("nasaBox");
-box.innerHTML="NASA EPIC Dünya verisi yükleniyor...";
-try{
-const r=await fetch(`https://api.nasa.gov/EPIC/api/natural/images?api_key=${NASA_API_KEY}`);
-const d=await r.json();
-if(!d.length){box.innerHTML="EPIC verisi bulunamadı.";return}
-const p=d[0];
-const date=p.date.split(" ")[0].replaceAll("-","/");
-const img=`https://epic.gsfc.nasa.gov/archive/natural/${date}/png/${p.image}.png`;
-box.innerHTML="<b>NASA EPIC Dünya Görüntüsü</b><br>Tarih: "+p.date+"<br>Başlık: "+p.caption+`<img src="${img}">`;
-}catch(e){box.innerHTML="EPIC verisi alınamadı."}
+loop();
+
+}catch(e){
+
+alert("Mikrofon izni gerekli");
+
 }
 
-async function startSigint(){
-try{
-const stream=await navigator.mediaDevices.getUserMedia({audio:true});
-audioCtx=new (window.AudioContext||window.webkitAudioContext)();
-analyser=audioCtx.createAnalyser();analyser.fftSize=4096;
-micSource=audioCtx.createMediaStreamSource(stream);micSource.connect(analyser);
-document.getElementById("alarmState").textContent="AKTİF";
-document.getElementById("sigintBox").innerHTML="Akustik analiz aktif.";
-analyzeSigint();
-}catch(e){document.getElementById("sigintBox").innerHTML="Mikrofon izni alınamadı."}
 }
 
-function stopSigint(){
-if(sigintTimer)clearInterval(sigintTimer);
-sigintLive=false;
-if(audioCtx)audioCtx.close();
-audioCtx=null;analyser=null;micSource=null;
-document.getElementById("alarmState").textContent="PASİF";
-document.getElementById("alarmFill").style.width="0%";
-document.getElementById("iDb").textContent="0";
-document.getElementById("sigType").textContent="--";
-document.getElementById("sigRisk").textContent="0%";
-document.getElementById("sigintBox").innerHTML="Akustik analiz durduruldu.";
+navigator.geolocation.getCurrentPosition(pos=>{
+
+document.getElementById("gpsTxt").innerText=
+pos.coords.latitude.toFixed(2);
+
+});
+
+window.addEventListener("deviceorientation",e=>{
+
+let h=e.webkitCompassHeading||(360-e.alpha);
+
+if(h){
+
+document.getElementById("compassTxt").innerText=
+Math.round(h)+"°";
+
 }
 
-function toggleSigintLive(){
-sigintLive=!sigintLive;
-if(sigintLive){if(!analyser)startSigint();sigintTimer=setInterval(analyzeSigint,700)}
-else if(sigintTimer)clearInterval(sigintTimer);
-}
+});
 
-function analyzeSigint(){
-if(!analyser){document.getElementById("sigintBox").innerHTML="Önce Başlat butonuna bas.";return}
-const freq=new Uint8Array(analyser.frequencyBinCount),time=new Uint8Array(analyser.fftSize);
-analyser.getByteFrequencyData(freq);analyser.getByteTimeDomainData(time);
-let sum=0,max=0,maxIdx=0,low=0,mid=0,high=0;
-for(let i=0;i<freq.length;i++){
-const v=freq[i];sum+=v;if(v>max){max=v;maxIdx=i}
-const hz=i*audioCtx.sampleRate/analyser.fftSize;
-if(hz<120)low+=v;else if(hz<2500)mid+=v;else high+=v;
-}
-const avg=sum/freq.length,dominantHz=Math.round(maxIdx*audioCtx.sampleRate/analyser.fftSize);
-let rms=0;for(let i=0;i<time.length;i++){const n=(time[i]-128)/128;rms+=n*n}
-rms=Math.sqrt(rms/time.length);
-const db=Math.max(0,Math.min(120,Math.round(20*Math.log10(rms+0.00001)+100)));
-let pulse=0;for(let i=1;i<time.length;i++){if(Math.abs(time[i]-time[i-1])>42)pulse++}
-const type=classifySignal(dominantHz,low,mid,high,pulse,avg,db);
-const fake=detectUnstableSignal(freq);
-const risk=calculateRisk(db,pulse,avg,type,fake);
-const threshold=parseInt(document.getElementById("alarmThreshold").value,10);
-document.getElementById("iDb").textContent=db;
-document.getElementById("sigType").textContent=type;
-document.getElementById("sigRisk").textContent=risk+"%";
-document.getElementById("alarmFill").style.width=risk+"%";
-document.getElementById("alarmState").textContent=risk>=threshold?"KIRMIZI":"AKTİF";
-document.getElementById("sigintBox").innerHTML="dB seviye: <b>"+db+"</b><br>Baskın frekans: <b>"+dominantHz+" Hz</b><br>Sinyal sınıfı: <b>"+type+"</b><br>Darbe yoğunluğu: <b>"+pulse+"</b><br>Kararsız sinyal: <b>"+(fake?"Evet":"Hayır")+"</b><br>Risk: <b>"+risk+"%</b>";
-}
+document.getElementById("targetInfo").innerHTML=
+`
+HEDEF: Moon<br>
+MESAFE: 384,400 km<br>
+DURUM: GÖRÜNÜR<br>
+OPTİK: 200X DIGITAL
+`;
 
-function classifySignal(hz,low,mid,high,pulse,avg,db){
-if(db<25)return "Sessiz ortam";
-if(pulse>180)return "Darbe / ani çarpma";
-if(hz>=80&&hz<=320&&mid>high)return "İnsan sesi / konuşma";
-if(hz<120&&low>mid)return "Düşük titreşim / motor";
-if(hz>2500&&high>mid)return "Elektronik tiz sinyal";
-if(avg>35&&low+mid+high>100000)return "Geniş bant gürültü";
-return "Karışık ortam sinyali";
-}
-
-function detectUnstableSignal(freq){
-let peaks=0;
-for(let i=2;i<freq.length-2;i++){if(freq[i]>freq[i-1]+35&&freq[i]>freq[i+1]+35&&freq[i]>80)peaks++}
-return peaks>35;
-}
-
-function calculateRisk(db,pulse,avg,type,fake){
-let risk=0;
-if(db>70)risk+=30;
-if(db>85)risk+=25;
-if(pulse>120)risk+=25;
-if(type.includes("Darbe"))risk+=25;
-if(type.includes("Elektronik"))risk+=15;
-if(fake)risk-=15;
-if(avg>40)risk+=10;
-return Math.max(0,Math.min(100,Math.round(risk)));
-}
-
-function runSatelliteSim(){
-document.getElementById("gpsBox").innerHTML="🛰️ Uydu paneli hazır.<br>Gerçek canlı uydu için ayrıca uydu/ISS API gerekir.<br>Şu an GPS + pusula + göksel hedef hesabı aktif.";
-}
-
-setInterval(updateTarget,1500);
-setInterval(runOfflineAI,4000);
-
-syncUI();
-selectTarget("Moon");
 startCamera();
+
 </script>
+
 </body>
 </html>
